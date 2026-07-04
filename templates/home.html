@@ -1,0 +1,178 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Амбар — зоотовары и комбикорм{% endblock %}
+
+{% block content %}
+  <section class="welcome container">
+    <img class="welcome-logo" src="{% static 'images/icons/Ugkoronalogo.svg' %}" alt="Логотип южной короны" />
+    <div class="welcome-text">
+      <h1>Добро пожаловать на сайт</h1>
+      <p>Здесь вы найдете широкий ассортимент кормов, зоотоваров и аксессуаров для вашего любимца. Вы можете выбрать и заказать товар онлайн по кнопке ниже</p>
+      <a href="{% url 'shop:catalog' %}" class="btn btn-primary" type="button">Заказать онлайн</a>
+    </div>
+    <img class="welcome-bag" src="{% static 'images/Bag.png' %}" alt="Семена" />
+  </section>
+
+  <section class="hero">
+    <div class="container hero-grid">
+      <div>
+        <p class="tag">Надёжные поставки</p>
+        <h1>Также мы продаем птицу от проверенного инкубатора в Майкопе</h1>
+        <p>Суточные цыплята, утята и гусята с прививкой. Важно! обязательно по преждевременной брони с предоплатой. Так же полезная информаци о выборе подходящего корма для разных стадий роста вы найдете ниже.</p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="{% url 'guides:guides' %}">Полезная информация</a>
+          <a class="btn" href="{% url 'shop:contacts' %}">Забронировать птицу</a>
+        </div>
+      </div>
+      <div class="hero-card">
+        <strong>Так же в ассортименте:</strong>
+        <ul>
+          <li>Гранулы для прудовых рыб;</li>
+          <li>Отруби, общий комбикорм;</li>
+          <li>Корм для грызунов, черепах, попугаев.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="delivery">
+    <div class="container">
+      <div class="section-title">
+        <h2>Расписание птицы</h2>
+        <span class="schedule-status">Ближайшая: вторник, 1 июля</span>
+      </div>
+      <div class="grid-3">
+        <article class="card schedule-card active" data-day="вторник, 1 июля">
+          <span class="tag">Скоро</span>
+          <div class="card-title">Вторник, 1 июля</div>
+          <div class="card-muted">Птица: суточные цыплята, утята, гусята</div>
+        </article>
+        <article class="card schedule-card" data-day="пятница, 4 июля">
+          <span class="tag">Ожидается</span>
+          <div class="card-title">Пятница, 4 июля</div>
+          <div class="card-muted">Птица: суточные цыплята, утята, гусята</div>
+        </article>
+        <article class="card schedule-card" data-day="вторник, 8 июля">
+          <span class="tag">Ожидается</span>
+          <div class="card-title">Вторник, 8 июля</div>
+          <div class="card-muted">Птица: суточные цыплята, утята, гусята</div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="catalog">
+    <div class="container">
+      <div class="section-title">
+        <h2>Категории товаров</h2>
+        <a href="{% url 'shop:catalog' %}">Все категории</a>
+      </div>
+      <div class="categories">
+        <a href="{% url 'shop:catalog' %}?category=korm-dlya-koshek" class="category-card card">
+          <img src="https://images.unsplash.com/photo-1535268647677-300dbf3d78d1?w=600&h=400&fit=crop&auto=format" alt="Корм для кошек" />
+          <div class="text">
+            <div class="card-title accent">Корм для кошек</div>
+            <div class="card-muted accent">64 товара</div>
+          </div>
+        </a>
+        <a href="{% url 'shop:catalog' %}?category=korm-dlya-sobak" class="category-card card">
+          <img src="https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=400&h=300&fit=crop&auto=format" alt="Корм для собак" />
+          <div class="text">
+            <div class="card-title accent">Корм для собак</div>
+            <div class="card-muted accent">71 товаров</div>
+          </div>
+        </a>
+        <a href="{% url 'shop:catalog' %}?category=kombikorm" class="category-card card">
+          <img src="https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=400&h=300&fit=crop&auto=format" alt="Комбикорм" />
+          <div class="text">
+            <div class="card-title accent">Комбикорм</div>
+            <div class="card-muted accent">37 товаров</div>
+          </div>
+        </a>
+        <a href="{% url 'shop:catalog' %}?category=ptitsa" class="category-card card">
+          <img src="https://images.unsplash.com/photo-1548550023-2bdb3c5beed7?w=400&h=300&fit=crop&auto=format" alt="Аксессуары" />
+          <div class="text">
+            <div class="card-title accent">Птица</div>
+            <div class="card-muted accent">10 товаров</div>
+          </div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="products">
+    <div class="container">
+      <div class="section-title">
+        <h2>Популярные товары</h2>
+        <a href="{% url 'shop:catalog' %}">Все товары</a>
+      </div>
+      <div class="grid-3">
+        <article class="card product-card">
+          <img class="image-box" src="{% static 'images/Ug_korona.png' %}" alt="Комбикорм для несушек"/>
+          <span class="tag">Хит продаж</span>
+          <div class="card-title">Комбикорм для несушек</div>
+          <div class="price">1 650 ₽</div>
+          <a href="{% url 'shop:product_detail' 'kombikorm-dlya-nesuhek' %}" class="btn btn-primary">Подробнее</a>
+        </article>
+        <article class="card product-card">
+          <img class="image-box" src="{% static 'images/All_dogs.png' %}" alt="Корм для собак"/>
+          <span class="tag">В наличии</span>
+          <div class="card-title">Корм для собак All dogs</div>
+          <div class="price">4 890 ₽</div>
+          <a href="{% url 'shop:product_detail' 'korm-dlya-sobak-all-dogs' %}" class="btn btn-primary">Подробнее</a>
+        </article>
+        <article class="card product-card">
+          <img class="image-box" src="{% static 'images/Karmy_cat.png' %}" alt="Корм для кошек"/>
+          <span class="tag">В наличии</span>
+          <div class="card-title">Karmy корм для кошек</div>
+          <div class="price">5 240 ₽</div>
+          <a href="{% url 'shop:product_detail' 'karmy-korm-dlya-koshek' %}" class="btn btn-primary">Подробнее</a>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="promo">
+    <div class="container promo-grid">
+      <article class="card">
+        <h3>Информация для поставщиков</h3>
+        <p>Принимаем поставки кормов и товаров. Смотреть ниже.</p>
+        <a class="btn btn-primary" href="{% url 'guides:guides' %}">Узнать условия</a>
+      </article>
+      <article class="card">
+        <h3>Программа лояльности</h3>
+        <p>Накопительные баллы за каждую покупку — 1 балл = 1 рубль.</p>
+        <a class="btn btn-primary" href="{% url 'shop:catalog' %}">Зарегистрироваться</a>
+      </article>
+    </div>
+  </section>
+
+  <section class="section reviews-section">
+    <div class="container">
+      <div class="section-title">
+        <h2>Отзывы покупателей</h2>
+        <a href="{% url 'account:add_review' %}" class="btn btn-link">Оставить отзыв</a>
+      </div>
+      <div class="reviews-grid">
+        {% if reviews %}
+          {% for review in reviews %}
+            <article class="card review-card">
+              <div class="review-header">
+                <strong>{{ review.name|default:"Покупатель" }}</strong>
+                <span>Купил товар</span>
+              </div>
+              <div class="review-stars" aria-label="Рейтинг {{ review.rating }} звезд">
+                {% for i in ""|default_if_none:""|cut:""|ljust:review.rating %}★{% endfor %}
+                {% for i in ""|default_if_none:""|cut:""|ljust:5|cut:review.rating %}☆{% endfor %}
+              </div>
+              <p>{{ review.comment|truncatechars:150 }}</p>
+            </article>
+          {% endfor %}
+        {% else %}
+          <p class="no-reviews">У нас пока нет отзывов</p>
+        {% endif %}
+      </div>
+    </div>
+  </section>
+{% endblock %}

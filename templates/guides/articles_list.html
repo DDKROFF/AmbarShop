@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Статьи - Амбар{% endblock %}
+
+{% block content %}
+  <section class="page-hero">
+    <div class="container page-hero-grid">
+      <div>
+        <p class="tag">Статьи</p>
+        <h1>Полезная информация</h1>
+        <p>Статьи по уходу за животными и нашей продукции</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <!-- Поисковая строка -->
+      <div class="search-bar" style="margin-bottom: 2rem; padding: 1rem;">
+        <form method="get" class="search-form">
+          <input type="text" name="q" value="{{ query }}" placeholder="Поиск статей..." />
+          <button type="submit" class="btn btn-primary">Найти</button>
+        </form>
+      </div>
+      
+      <div class="profile-content">
+        <!-- Список статей -->
+        <div class="articles-list">
+          {% if articles %}
+            {% for article in articles %}
+              <div class="article-card">
+                <h2 class="article-title">
+                  <a href="{% url 'guides:article_detail' article.id %}">{{ article.title }}</a>
+                </h2>
+                <div class="article-meta">
+                  <span>{{ article.created_at|date:"d.m.Y" }}</span>
+                  <span>👁️ {{ article.like_count }}</span>
+                </div>
+                <div class="article-preview">
+                  {{ article.content|truncatewords:30 }}
+                </div>
+                <a href="{% url 'guides:article_detail' article.id %}" class="btn btn-link">Читать далее</a>
+              </div>
+            {% endfor %}
+          {% else %}
+            <div class="empty-message">
+              <p>Статьи не найдены</p>
+              <p>Попробуйте изменить параметры поиска</p>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </section>
+{% endblock %}

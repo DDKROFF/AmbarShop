@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Оплата прошла успешно - Амбар{% endblock %}
+
+{% block content %}
+  <section class="page-hero">
+    <div class="container page-hero-grid">
+      <div>
+        <p class="tag">Оплата</p>
+        <h1>Заказ оплачен!</h1>
+        <p>Спасибо за покупку</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="profile-container">
+        <aside class="profile-sidebar">
+          <nav class="profile-menu">
+            <a href="{% url 'account:profile' %}">Личные данные</a>
+            <a href="{% url 'account:orders' %}">Мои заказы</a>
+            <a href="{% url 'account:active_orders' %}">Активные заказы</a>
+            <a href="{% url 'account:addresses' %}">Адреса доставки</a>
+            <a href="{% url 'account:cart' %}">Корзина</a>
+            <a href="{% url 'account:saved' %}">Избранное</a>
+            <a href="{% url 'account:settings' %}">Настройки</a>
+          </nav>
+        </aside>
+        
+        <main class="profile-content">
+          <div class="payment-success">
+            <div class="success-icon">
+              <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                <polyline points="22 4 12 14.01 9 11.01"/>
+              </svg>
+            </div>
+            
+            <div class="payment-info">
+              <h2>Заказ {{ order.id }} успешно оплачен!</h2>
+              <p class="payment-success-text">Ваш заказ принят в обработку. Мы свяжемся с вами для подтверждения.</p>
+              
+              <div class="order-details">
+                <div class="order-detail-item">
+                  <strong>Имя:</strong> {{ order.first_name }} {{ order.last_name }}
+                </div>
+                <div class="order-detail-item">
+                  <strong>Телефон:</strong> {{ order.phone }}
+                </div>
+                <div class="order-detail-item">
+                  <strong>Email:</strong> {{ order.email }}
+                </div>
+                <div class="order-detail-item">
+                  <strong>Адрес:</strong> {{ order.address }}
+                </div>
+                <div class="order-detail-item">
+                  <strong>Способ доставки:</strong> {{ order.delivery_method }}
+                </div>
+                <div class="order-detail-item">
+                  <strong>Способ оплаты:</strong> СБП (Система быстрых платежей)
+                </div>
+                <div class="order-detail-item">
+                  <strong>Сумма:</strong> {{ order.total_amount }} ₽
+                </div>
+                <div class="order-detail-item">
+                  <strong>Статус:</strong> 
+                  <span class="order-status order-status-{{ order.status }}">{{ order.get_status_display }}</span>
+                </div>
+              </div>
+              
+              <div class="payment-buttons">
+                <a href="{% url 'account:orders' %}" class="btn btn-primary btn-large">Мои заказы</a>
+                <a href="{% url 'shop:catalog' %}" class="btn btn-secondary btn-large">Продолжить покупки</a>
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+  </section>
+{% endblock %}
+
+{% block extra_scripts %}
+  <script>
+    // Автоматическое перенаправление через 5 секунд
+    setTimeout(function() {
+      window.location.href = '{% url "account:orders" %}';
+    }, 5000);
+  </script>
+{% endblock %}

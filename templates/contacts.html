@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Контакты — Амбар{% endblock %}
+
+{% block content %}
+  <section class="page-hero">
+    <div class="container page-hero-grid">
+      <div>
+        <p class="tag">Контакты</p>
+        <h1>Свяжитесь с нами</h1>
+        <p>Мы всегда готовы помочь с выбором товара, оформлением заказа и бронированием птицы.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-title">
+        <h2>Наши контакты</h2>
+      </div>
+      
+      {% if success %}
+        <div class="message message-success">
+          Сообщение успешно отправлено! Мы свяжемся с вами в ближайшее время.
+        </div>
+      {% endif %}
+      
+      {% if error %}
+        <div class="message message-error">
+          {{ error }}
+        </div>
+      {% endif %}
+      
+      <div class="page-content">
+        <div class="grid-2 contact-position">
+          <article class="card contact-card">
+            <strong>Адрес</strong>
+            <p>г. Белореченск, ул. Железнодорожная 80</p>
+            <strong>Телефон</strong>
+            <p>+7 (900) 000-00-00</p>
+            <strong>График</strong>
+            <p>Пн–Пт: 9:00 – 18:00</p>
+            <p>Сб–Вс: 9:00 – 15:00</p>
+          </article>
+          
+          <article class="card form-card">
+            <form class="contact-form" method="post">
+              {% csrf_token %}
+              <label>
+                <span>Имя</span>
+                <input type="text" name="name" placeholder="Ваше имя" required value="{{ name|default:'' }}" />
+              </label>
+              <label>
+                <span>Email</span>
+                <input type="email" name="email" placeholder="example@mail.ru" required value="{{ email|default:'' }}" />
+              </label>
+              <label>
+                <span>Сообщение</span>
+                <textarea name="message" placeholder="Ваш вопрос" rows="5" required>{{ message|default:'' }}</textarea>
+              </label>
+              <button class="btn btn-primary" type="submit">Отправить сообщение</button>
+            </form>
+          </article>
+        </div>
+
+        <article class="card contact-card-3">
+          <strong>Памятка для поставщиков</strong>
+          <p>Если вы хотите стать поставщиком магазина Амбар, пожалуйста, свяжитесь с нами по телефону или через форму обратной связи с лева. Мы рассматриваем предложения от производителей кормов, комбикорма и аксессуаров для животных.</p>
+          <p>Наш магазин работает уже 8 лет на рынке кормов. Мы гордимся качеством наших товаров и обслуживанием клиентов. Сейчас вышли на новый уровень сервиса благодаря интернет магазину.</p>
+          <p>Мы будем рады рассмотреть ваши предложения и готовы предложить взаимовыгодные условия сотрудничества. Наши постоянные объёмы закупок и широкая клиентская база (включая розничных покупателей и оптовых заказчиков по всей России) гарантируют стабильный спрос на качественные корма и аксессуары. Мы ценим надёжных партнёров и обеспечиваем своевременные расчёты, прозрачную систему приёмки и гибкий подход к ценообразованию. Для нас важны сертифицированная продукция, конкурентные цены и возможность совместных промо-акций. Если вы готовы предложить товары, соответствующие высоким стандартам, мы открыты к диалогу — обсудим индивидуальные условия поставок, логистику и график отгрузок. Ждём ваших заявок и гарантируем внимательное отношение к каждому предложению.</p>
+          <p>Необходимые данные для подачи заявки на сотрудничество:</p>
+          <ul>
+            <li>Наименование организации</li>
+            <li>Контактное лицо</li>
+            <li>Телефон и email</li>
+            <li>Мини-каталог ассортимета</li>
+          </ul>
+        </article>
+      </div>
+    </div>
+  </section>
+{% endblock %}

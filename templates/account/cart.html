@@ -1,0 +1,176 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Корзина - Амбар{% endblock %}
+
+{% block content %}
+  <section class="page-hero">
+    <div class="container page-hero-grid">
+      <div>
+        <p class="tag">Корзина</p>
+        <h1>Корзина</h1>
+        <p>Ваши выбранные товары</p>
+      </div>
+      <a href="{% url 'shop:catalog' %}" class="btn btn-link">Продолжить покупки</a>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="profile-container">
+        <aside class="profile-sidebar">
+          <nav class="profile-menu">
+            <a href="{% url 'account:profile' %}">Личные данные</a>
+            <a href="{% url 'account:orders' %}">Мои заказы</a>
+            <a href="{% url 'account:active_orders' %}">Активные заказы</a>
+            <a href="{% url 'account:addresses' %}">Адреса доставки</a>
+            <a href="{% url 'account:cart' %}">Корзина</a>
+            <a href="{% url 'account:saved' %}">Избранное</a>
+            <a href="{% url 'account:settings' %}">Настройки</a>
+          </nav>
+        </aside>
+        
+        <main class="profile-content">
+          {% if cart.items.exists %}
+            <form method="post" id="cart-form">
+              {% csrf_token %}
+              <div class="cart-items">
+                {% for item in cart_items %}
+                  <div class="cart-item" data-item-id="{{ item.id }}">
+                    <div class="cart-item-image">
+                      <img src="{{ item.product.images.all.0.image.url }}" alt="{{ item.product.name }}" onerror="this.src='{% static 'images/placeholder.jpg' %}'" />
+                    </div>
+                    <div class="cart-item-info">
+                      <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                        <input type="checkbox" name="selected_items" value="{{ item.id }}" class="cart-checkbox" checked />
+                        <a href="{% url 'shop:product_detail' item.product.id %}" class="cart-item-name">
+                          {{ item.product.name }}
+                        </a>
+                      </label>
+                      <p class="cart-item-price">{{ item.product.price }} ₽</p>
+                      <div class="cart-item-quantity">
+                        <button type="button" class="qty-btn decrease" data-item-id="{{ item.id }}">-</button>
+                        <span class="qty-value">{{ item.quantity }}</span>
+                        <button type="button" class="qty-btn increase" data-item-id="{{ item.id }}">+</button>
+                      </div>
+                    </div>
+                    <div class="cart-item-total">
+                      <p>{{ item.get_total_price }} ₽</p>
+                      <button type="button" class="remove-btn" data-item-id="{{ item.id }}">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                          <path d="M3 6h18M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+                {% endfor %}
+              </div>
+              
+              <div class="cart-summary">
+                <div class="cart-summary-total">
+                  <p>Итого:</p>
+                  <p class="cart-total-price">{{ cart.get_total_price|floatformat:2 }} ₽</p>
+                </div>
+                <a href="{% url 'account:checkout' %}" class="btn btn-primary btn-large">Оформить заказ</a>
+              </div>
+            </form>
+          {% else %}
+            <div class="cart-empty">
+              <div style="text-align: center; padding: 3rem 2rem;">
+                <div style="font-size: 4rem; margin-bottom: 1rem;">🛒</div>
+                <h2>Корзина пуста</h2>
+                <p>Добавьте товары в корзину, чтобы начать покупки</p>
+                <a href="{% url 'shop:catalog' %}" class="btn btn-primary btn-large">Перейти в каталог</a>
+              </div>
+            </div>
+          {% endif %}
+        </main>
+      </div>
+    </div>
+  </section>
+{% endblock %}
+
+{% block extra_scripts %}
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Обработка удаления товара
+      document.querySelectorAll('.remove-btn').forEach(button => {
+        button.addEventListener('click', async function() {
+          const itemId = this.dataset.itemId;
+          if (!itemId) return;
+          
+          try {
+            const response = await fetch('/account/cart/remove/', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'X-CSRFToken': getCsrfToken()
+              },
+              body: new URLSearchParams({
+                'cart_item_id': itemId
+              })
+            });
+            
+            const data = await response.json();
+            if (data.success) {
+              location.reload();
+            }
+          } catch (error) {
+            console.error('Ошибка удаления товара:', error);
+          }
+        });
+      });
+      
+      // Обработка изменения количества
+      document.querySelectorAll('.increase, .decrease').forEach(button => {
+        button.addEventListener('click', async function() {
+          const itemId = this.dataset.itemId;
+          if (!itemId) return;
+          
+          const itemElement = this.closest('.cart-item');
+          const quantitySpan = itemElement.querySelector('.qty-value');
+          let currentQuantity = parseInt(quantitySpan.textContent);
+          
+          if (this.classList.contains('increase')) {
+            currentQuantity++;
+          } else if (this.classList.contains('decrease') && currentQuantity > 1) {
+            currentQuantity--;
+          }
+          
+          try {
+            const response = await fetch('/account/cart/update/', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'X-CSRFToken': getCsrfToken()
+              },
+              body: new URLSearchParams({
+                'cart_item_id': itemId,
+                'quantity': currentQuantity
+              })
+            });
+            
+            const data = await response.json();
+            if (data.success) {
+              quantitySpan.textContent = currentQuantity;
+              updateCartSummary(data.cart_total);
+            }
+          } catch (error) {
+            console.error('Ошибка обновления количества:', error);
+          }
+        });
+      });
+      
+      function getCsrfToken() {
+        return document.querySelector('[name=csrfmiddlewaretoken]').value;
+      }
+      
+      function updateCartSummary(total) {
+        const totalElement = document.querySelector('.cart-total-price');
+        if (totalElement) {
+          totalElement.textContent = total + ' ₽';
+        }
+      }
+    });
+  </script>
+{% endblock %}

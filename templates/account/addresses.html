@@ -1,0 +1,224 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Адреса доставки - Амбар{% endblock %}
+
+{% block content %}
+  <section class="page-hero">
+    <div class="container page-hero-grid">
+      <div>
+        <p class="tag">Адреса доставки</p>
+        <h1>Управление адресами</h1>
+        <p>Выберите адрес для доставки заказов</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="profile-container">
+        <aside class="profile-sidebar">
+          <nav class="profile-menu">
+            <a href="{% url 'account:profile' %}">Личные данные</a>
+            <a href="{% url 'account:orders' %}">Мои заказы</a>
+            <a href="{% url 'account:active_orders' %}">Активные заказы</a>
+            <a href="{% url 'account:addresses' %}" class="active">Адреса доставки</a>
+            <a href="{% url 'account:saved' %}">Избранное</a>
+            <a href="{% url 'account:settings' %}">Настройки</a>
+          </nav>
+        </aside>
+        
+        <main class="profile-content">
+          {% if messages %}
+            <div class="messages">
+              {% for message in messages %}
+                <div class="message {% if message.tags %}message-{{ message.tags }}{% endif %}">
+                  {{ message|safe }}
+                </div>
+              {% endfor %}
+            </div>
+          {% endif %}
+          
+          {% if edit_mode %}
+            <!-- Форма редактирования адреса -->
+            <div class="profile-section" style="margin-bottom: 2rem;">
+              <h2>Редактировать адрес</h2>
+              <form class="profile-form" method="POST">
+                {% csrf_token %}
+                <div class="form-group">
+                  <label>{{ form.city.label }}</label>
+                  {{ form.city }}
+                  {% if form.city.errors %}
+                    <span class="error">{{ form.city.errors }}</span>
+                  {% endif %}
+                </div>
+                <div class="form-group">
+                  <label>{{ form.street.label }}</label>
+                  {{ form.street }}
+                  {% if form.street.errors %}
+                    <span class="error">{{ form.street.errors }}</span>
+                  {% endif %}
+                </div>
+                <div class="form-group">
+                  <label>{{ form.house.label }}</label>
+                  {{ form.house }}
+                  {% if form.house.errors %}
+                    <span class="error">{{ form.house.errors }}</span>
+                  {% endif %}
+                </div>
+                <div class="form-group">
+                  <label>{{ form.apartment.label }}</label>
+                  {{ form.apartment }}
+                  <small class="help-text">Необязательное поле</small>
+                </div>
+                <div class="form-group">
+                  <label>{{ form.entrance.label }}</label>
+                  {{ form.entrance }}
+                  <small class="help-text">Необязательное поле</small>
+                </div>
+                <div class="form-group">
+                  <label>{{ form.floor.label }}</label>
+                  {{ form.floor }}
+                  <small class="help-text">Необязательное поле</small>
+                </div>
+                <div class="form-group">
+                  <label>{{ form.intercom.label }}</label>
+                  {{ form.intercom }}
+                  <small class="help-text">Необязательное поле</small>
+                </div>
+                <div style="display: flex; gap: 1rem; margin-top: 1rem;">
+                  <button type="submit" class="btn btn-primary">Сохранить изменения</button>
+                  <a href="{% url 'account:addresses' %}" class="btn btn-secondary">Отмена</a>
+                </div>
+              </form>
+            </div>
+          {% else %}
+            <!-- Форма добавления адреса -->
+            <div class="profile-section" style="margin-bottom: 2rem;">
+              <h2>Добавить новый адрес</h2>
+              <form class="profile-form" method="POST">
+                {% csrf_token %}
+                <div class="form-group">
+                  <label>{{ form.city.label }}</label>
+                  {{ form.city }}
+                  {% if form.city.errors %}
+                    <span class="error">{{ form.city.errors }}</span>
+                  {% endif %}
+                </div>
+                <div class="form-group">
+                  <label>{{ form.street.label }}</label>
+                  {{ form.street }}
+                  {% if form.street.errors %}
+                    <span class="error">{{ form.street.errors }}</span>
+                  {% endif %}
+                </div>
+                <div class="form-group">
+                  <label>{{ form.house.label }}</label>
+                  {{ form.house }}
+                  {% if form.house.errors %}
+                    <span class="error">{{ form.house.errors }}</span>
+                  {% endif %}
+                </div>
+                <div class="form-group">
+                  <label>{{ form.apartment.label }}</label>
+                  {{ form.apartment }}
+                  <small class="help-text">Необязательное поле</small>
+                </div>
+                <div class="form-group">
+                  <label>{{ form.entrance.label }}</label>
+                  {{ form.entrance }}
+                  <small class="help-text">Необязательное поле</small>
+                </div>
+                <div class="form-group">
+                  <label>{{ form.floor.label }}</label>
+                  {{ form.floor }}
+                  <small class="help-text">Необязательное поле</small>
+                </div>
+                <div class="form-group">
+                  <label>{{ form.intercom.label }}</label>
+                  {{ form.intercom }}
+                  <small class="help-text">Необязательное поле</small>
+                </div>
+                <button type="submit" class="btn btn-primary">Добавить адрес</button>
+              </form>
+            </div>
+          {% endif %}
+          
+          <div class="addresses-list">
+            {% if addresses %}
+              {% for address in addresses %}
+                <div class="address-card card">
+                  <div class="address-info">
+                    <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+                      <strong>Город:</strong>
+                      <span style="color: var(--text);">{{ address.city }}</span>
+                      {% if address.is_default %}
+                        <span style="background: var(--green-500); color: white; padding: 0.2rem 0.5rem; border-radius: 0.25rem; font-size: 0.75rem;">По умолчанию</span>
+                      {% endif %}
+                    </div>
+                    <p style="margin: 0; color: var(--text);"><strong>Адрес:</strong> {{ address.street }}, д. {{ address.house }}</p>
+                    {% if address.apartment %}
+                      <p style="margin: 0; color: var(--text);"><strong>Квартира:</strong> {{ address.apartment }}</p>
+                    {% endif %}
+                    {% if address.entrance %}
+                      <p style="margin: 0; color: var(--text);"><strong>Подъезд:</strong> {{ address.entrance }}</p>
+                    {% endif %}
+                    {% if address.floor %}
+                      <p style="margin: 0; color: var(--text);"><strong>Этаж:</strong> {{ address.floor }}</p>
+                    {% endif %}
+                    {% if address.intercom %}
+                      <p style="margin: 0; color: var(--text);"><strong>Домофон:</strong> {{ address.intercom }}</p>
+                    {% endif %}
+                  </div>
+                  <div class="address-actions">
+                    <form method="post" style="display: inline;">
+                      {% csrf_token %}
+                      <button type="submit" class="btn btn-link" onclick="return confirm('Удалить этот адрес?')" formaction="{% url 'account:delete_address' address.id %}">Удалить</button>
+                    </form>
+                    <a href="{% url 'account:edit_address' address.id %}" class="btn btn-link">Редактировать</a>
+                    {% if not address.is_default %}
+                      <form method="post" style="display: inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-link" formaction="{% url 'account:set_default_address' address.id %}">Сделать по умолчанию</button>
+                      </form>
+                    {% endif %}
+                  </div>
+                </div>
+              {% endfor %}
+            {% else %}
+              <div class="empty-message">
+                <p>У вас пока нет добавленных адресов</p>
+                <p style="color: #666; margin-top: 0.5rem;">Добавьте адрес для быстрой доставки заказов</p>
+              </div>
+            {% endif %}
+          </div>
+        </main>
+      </div>
+    </div>
+  </section>
+{% endblock %}
+
+{% block extra_scripts %}
+  <script>
+    // Установка адреса по умолчанию
+    window.setDefaultAddress = function(addressId) {
+      if (confirm('Сделать этот адрес адресом по умолчанию?')) {
+        var form = document.createElement('form');
+        form.method = 'POST';
+        form.action = '/account/addresses/set-default/' + addressId + '/';
+        
+        var csrfToken = document.querySelector('[name=csrfmiddlewaretoken]');
+        if (csrfToken) {
+          var csrfInput = document.createElement('input');
+          csrfInput.type = 'hidden';
+          csrfInput.name = 'csrfmiddlewaretoken';
+          csrfInput.value = csrfToken.value;
+          form.appendChild(csrfInput);
+        }
+        
+        document.body.appendChild(form);
+        form.submit();
+      }
+    };
+  </script>
+{% endblock %}

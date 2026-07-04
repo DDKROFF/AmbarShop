@@ -1,0 +1,152 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ product.name }} - Амбар{% endblock %}
+
+{% block content %}
+  <section class="page-hero">
+    <div class="container page-hero-grid">
+      <div>
+        <p class="tag">Товар</p>
+        <h1>{{ product.name }}</h1>
+        <p>Информация о товаре</p>
+      </div>
+      <a href="{% url 'shop:catalog' %}" class="btn btn-link">Кatalog</a>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="product-detail-container">
+        <div class="product-detail-image">
+          {% if product.images.all %}
+            <img src="{{ product.images.all.0.image.url }}" alt="{{ product.name }}" />
+          {% else %}
+            <img src="{% static 'images/placeholder.jpg' %}" alt="{{ product.name }}" />
+          {% endif %}
+        </div>
+        
+        <div class="product-detail-info">
+          <div class="product-detail-title">
+            <h1>{{ product.name }}</h1>
+            <div class="product-detail-price">{{ product.price|floatformat:2 }} ₽</div>
+          </div>
+          
+          <div class="product-detail-description">
+            {{ product.description|linebreaks }}
+          </div>
+          
+          <div class="product-detail-stock">
+            {% if product.stock > 0 %}
+              <span class="stock-available">В наличии: {{ product.stock }} шт.</span>
+              {% if product.stock < 10 %}
+                <span class="stock-warning-small">Мало товара!</span>
+              {% endif %}
+            {% else %}
+              <span class="stock-out">Нет в наличии</span>
+            {% endif %}
+          </div>
+          
+          <div class="product-detail-actions">
+            <form id="addToCartForm">
+              <div class="quantity-selector">
+                <label>Количество:</label>
+                <div class="quantity-controls">
+                  <button type="button" class="qty-btn decrease" onclick="changeQuantity(-1)">&minus;</button>
+                  <input type="number" name="quantity" value="1" min="1" max="{{ product.stock }}" id="quantityInput" />
+                  <button type="button" class="qty-btn increase" onclick="changeQuantity(1)">&plus;</button>
+                </div>
+              </div>
+              
+              <button type="button" class="btn btn-primary btn-large" onclick="addToCart()">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="9" cy="21" r="1"/>
+                  <circle cx="20" cy="21" r="1"/>
+                  <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+                </svg>
+                В корзину
+              </button>
+            </form>
+          </div>
+          
+          <div class="product-detail-meta">
+            <p><strong>Категория:</strong> <a href="{% url 'shop:catalog' %}?category={{ product.category.slug }}">{{ product.category.name }}</a></p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="related-products">
+        <h3 class="section-title">Похожие товары</h3>
+        <div class="products-grid">
+          {% for related in product.category.products.all|slice:":4" %}
+            {% if related != product %}
+              <div class="product-card">
+                <div class="product-image">
+                  {% if related.images.all %}
+                    <img src="{{ related.images.all.0.image.url }}" alt="{{ related.name }}" />
+                  {% else %}
+                    <img src="{% static 'images/placeholder.jpg' %}" alt="{{ related.name }}" />
+                  {% endif %}
+                </div>
+                <div class="product-info">
+                  <h4 class="product-name">
+                    <a href="{% url 'shop:product_detail' related.slug %}">{{ related.name }}</a>
+                  </h4>
+                  <div class="product-price">{{ related.price|floatformat:2 }} ₽</div>
+                  <a href="{% url 'shop:product_detail' related.slug %}" class="btn btn-primary product-card-btn">Купить</a>
+                </div>
+              </div>
+            {% endif %}
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </section>
+{% endblock %}
+
+{% block extra_scripts %}
+  <script>
+    function changeQuantity(delta) {
+      const input = document.getElementById('quantityInput');
+      let value = parseInt(input.value) + delta;
+      if (value < 1) value = 1;
+      if (value > {{ product.stock }}) value = {{ product.stock }};
+      input.value = value;
+    }
+    
+    function addToCart() {
+      const quantity = parseInt(document.getElementById('quantityInput').value);
+      const formData = new FormData();
+      formData.append('product_id', {{ product.id }});
+      formData.append('quantity', quantity);
+      
+      fetch('/account/cart/add/', {
+        method: 'POST',
+        headers: {
+          'X-CSRFToken': '{{ csrf_token }}'
+        },
+        body: formData
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          alert('Товар добавлен в корзину!');
+          // Обновляем количество товаров в корзине в шапке
+          updateCartCount(data.cart_count);
+        }
+      })
+      .catch(error => {
+        console.error('Ошибка добавления в корзину:', error);
+        alert('Ошибка при добавлении товара в корзину');
+      });
+    }
+    
+    function updateCartCount(count) {
+      // Обновляем количество товаров в корзине в шапке
+      const cartCount = document.querySelector('.cart-count');
+      if (cartCount) {
+        cartCount.textContent = count;
+      }
+    }
+  </script>
+{% endblock %}

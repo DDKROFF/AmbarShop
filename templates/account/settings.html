@@ -1,0 +1,188 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Настройки - Амбар{% endblock %}
+
+{% block content %}
+  <section class="page-hero">
+    <div class="container page-hero-grid">
+      <div>
+        <p class="tag">Личный кабинет</p>
+        <h1>Настройки</h1>
+        <p>Управление вашими данными и безопасностью</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="profile-container">
+        <aside class="profile-sidebar">
+          <nav class="profile-menu">
+            <a href="{% url 'account:profile' %}">Личные данные</a>
+            <a href="{% url 'account:orders' %}">Мои заказы</a>
+            <a href="{% url 'account:active_orders' %}">Активные заказы</a>
+            <a href="{% url 'account:addresses' %}">Адреса доставки</a>
+            <a href="{% url 'account:saved' %}">Избранное</a>
+            <a href="{% url 'account:settings' %}" class="active">Настройки</a>
+          </nav>
+        </aside>
+        
+        <main class="profile-content">
+          <!-- Смена пароля -->
+          <div class="profile-section">
+            <h2>Смена пароля</h2>
+            <form class="profile-form" method="POST">
+              {% csrf_token %}
+              <div class="form-group">
+                <label>{{ password_form.current_password.label }}</label>
+                {{ password_form.current_password }}
+                {% if password_form.current_password.errors %}
+                  <span class="error">{{ password_form.current_password.errors }}</span>
+                {% endif %}
+              </div>
+              <div class="form-group">
+                <label>{{ password_form.new_password.label }}</label>
+                {{ password_form.new_password }}
+                {% if password_form.new_password.errors %}
+                  <span class="error">{{ password_form.new_password.errors }}</span>
+                {% endif %}
+              </div>
+              <div class="form-group">
+                <label>{{ password_form.confirm_password.label }}</label>
+                {{ password_form.confirm_password }}
+                {% if password_form.confirm_password.errors %}
+                  <span class="error">{{ password_form.confirm_password.errors }}</span>
+                {% endif %}
+              </div>
+              {% if password_form.non_field_errors %}
+                <div class="error">
+                  {% for error in password_form.non_field_errors %}
+                    <p class="error-text">{{ error }}</p>
+                  {% endfor %}
+                </div>
+              {% endif %}
+              <button type="submit" name="change_password" class="btn btn-primary">Сменить пароль</button>
+            </form>
+          </div>
+
+          <!-- Смена email -->
+          <div class="profile-section" style="margin-top: 2rem;">
+            <h2>Смена email</h2>
+            <form class="profile-form" method="POST">
+              {% csrf_token %}
+              <div class="form-group">
+                <label>Текущий email</label>
+                <input type="email" value="{{ user.email }}" readonly />
+              </div>
+              <div class="form-group">
+                <label>{{ email_form.new_email.label }}</label>
+                {{ email_form.new_email }}
+                {% if email_form.new_email.errors %}
+                  <span class="error">{{ email_form.new_email.errors }}</span>
+                {% endif %}
+              </div>
+              <div class="form-group">
+                <label>{{ email_form.password.label }}</label>
+                {{ email_form.password }}
+                {% if email_form.password.errors %}
+                  <span class="error">{{ email_form.password.errors }}</span>
+                {% endif %}
+              </div>
+              {% if email_form.non_field_errors %}
+                <div class="error">
+                  {% for error in email_form.non_field_errors %}
+                    <p class="error-text">{{ error }}</p>
+                  {% endfor %}
+                </div>
+              {% endif %}
+              <button type="submit" name="change_email" class="btn btn-primary">Изменить email</button>
+            </form>
+          </div>
+
+          <!-- Смена номера телефона -->
+          <div class="profile-section" style="margin-top: 2rem;">
+            <h2>Смена номера телефона</h2>
+            <form class="profile-form" method="POST">
+              {% csrf_token %}
+              <div class="form-group">
+                <label>Текущий номер</label>
+                <input type="tel" value="{{ user.phone|default:'' }}" readonly />
+              </div>
+              <div class="form-group">
+                <label>{{ phone_form.new_phone.label }}</label>
+                {{ phone_form.new_phone }}
+                {% if phone_form.new_phone.errors %}
+                  <span class="error">{{ phone_form.new_phone.errors }}</span>
+                {% endif %}
+              </div>
+              <div class="form-group">
+                <label>{{ phone_form.password.label }}</label>
+                {{ phone_form.password }}
+                {% if phone_form.password.errors %}
+                  <span class="error">{{ phone_form.password.errors }}</span>
+                {% endif %}
+              </div>
+              {% if phone_form.non_field_errors %}
+                <div class="error">
+                  {% for error in phone_form.non_field_errors %}
+                    <p class="error-text">{{ error }}</p>
+                  {% endfor %}
+                </div>
+              {% endif %}
+              <button type="submit" name="change_phone" class="btn btn-primary">Изменить номер</button>
+            </form>
+          </div>
+
+          <!-- Удаление аккаунта -->
+          <div class="profile-section" style="margin-top: 2rem; padding: 1.5rem; background: #fff5f5; border-radius: 1rem; border: 1px solid #ffe5e5;">
+            <h2 style="color: var(--red-500);">Удаление аккаунта</h2>
+            <p style="color: #666; margin-bottom: 1.5rem;">Внимание: это действие необратимо и приведет к удалению всех ваших данных.</p>
+            <form id="delete-account-form" method="POST">
+              {% csrf_token %}
+              <button type="button" class="btn btn-danger" onclick="confirmDelete()">Удалить аккаунт</button>
+            </form>
+          </div>
+        </main>
+      </div>
+    </div>
+  </section>
+{% endblock %}
+
+{% block extra_scripts %}
+  <script>
+    // Подтверждение удаления
+    window.confirmDelete = function() {
+      const email = prompt('Введите свой email для подтверждения удаления:');
+      
+      if (!email) {
+        return;
+      }
+      
+      if (email.trim() !== '{{ user.email }}') {
+        alert('Email не совпадает');
+        return;
+      }
+      
+      if (confirm('Вы действительно хотите удалить аккаунт? Это действие необратимо!')) {
+        // Создаем форму программно
+        var form = document.createElement('form');
+        form.method = 'POST';
+        form.action = '/account/delete-account/';
+        
+        // Добавляем CSRF token
+        var csrfToken = document.querySelector('[name=csrfmiddlewaretoken]');
+        if (csrfToken) {
+          var csrfInput = document.createElement('input');
+          csrfInput.type = 'hidden';
+          csrfInput.name = 'csrfmiddlewaretoken';
+          csrfInput.value = csrfToken.value;
+          form.appendChild(csrfInput);
+        }
+        
+        document.body.appendChild(form);
+        form.submit();
+      }
+    };
+  </script>
+{% endblock %}

@@ -1,0 +1,17 @@
+<!-- Фильтр категорий -->
+<div class="filter-section">
+  <h3 class="filter-title">Категории</h3>
+  <div class="filter-checkboxes">
+    <label class="checkbox-label">
+      <input type="checkbox" name="category" value="" {% if not selected_categories %}checked{% endif %} onchange="filterForm.submit()" />
+      <span>Все категории</span>
+    </label>
+    
+    {% for category in categories %}
+      <label class="checkbox-label">
+        <input type="checkbox" name="category" value="{{ category.slug }}" {% if category.slug in selected_categories %}checked{% endif %} onchange="filterForm.submit()" />
+        <span>{{ category.name }}</span>
+      </label>
+    {% endfor %}
+  </div>
+</div>

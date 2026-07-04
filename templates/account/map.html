@@ -1,0 +1,168 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Выбор адреса - Амбар{% endblock %}
+
+{% block content %}
+  <section class="page-hero">
+    <div class="container page-hero-grid">
+      <div>
+        <p class="tag">Выбор адреса</p>
+        <h1>Выберите адрес доставки</h1>
+        <p>Кликните на карте для выбора места</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="profile-container">
+        <aside class="profile-sidebar">
+          <nav class="profile-menu">
+            <a href="{% url 'account:profile' %}">Личные данные</a>
+            <a href="{% url 'account:orders' %}">Мои заказы</a>
+            <a href="{% url 'account:active_orders' %}">Активные заказы</a>
+            <a href="{% url 'account:addresses' %}" class="active">Адреса доставки</a>
+            <a href="{% url 'account:map' %}">Карта</a>
+            <a href="{% url 'account:saved' %}">Избранное</a>
+            <a href="{% url 'account:settings' %}">Настройки</a>
+          </nav>
+        </aside>
+        
+        <main class="profile-content">
+          <div id="map" style="height: 500px; width: 100%; border-radius: 1rem; overflow: hidden; background: #f7fcf5;"></div>
+          
+          <div class="map-info" style="margin-top: 1rem; padding: 1.5rem; border: 2px solid var(--border); border-radius: 0.9rem; background: white; text-align: center;">
+            <div id="address-info" style="margin-bottom: 1rem;">
+              <p>Кликните на карте для выбора адреса</p>
+            </div>
+            <button id="save-address-btn" class="btn btn-primary" style="display: none; padding: 0.75rem 2rem;">Сохранить адрес</button>
+          </div>
+        </main>
+      </div>
+    </div>
+  </section>
+{% endblock %}
+
+{% block extra_scripts %}
+  <script src="https://api-maps.yandex.ru/2.1/?apikey=a52a85fb-0c8d-4922-a588-7795ec85dbde&lang=ru_RU" type="text/javascript"></script>
+  <script>
+    ymaps.ready(function () {
+      var myMap = new ymaps.Map('map', {
+        center: [45.0355, 38.9775],
+        zoom: 10,
+        controls: ['zoomControl', 'searchControl', 'typeSelector', 'fullscreenControl']
+      });
+      
+      // Панель поиска
+      var searchControl = new ymaps.control.SearchControl({
+        options: {
+          provider: 'yandex#search',
+          noCentering: true
+        }
+      });
+      myMap.controls.add(searchControl);
+      
+      // Метка для выбора адреса
+      var placemark = new ymaps.Placemark([45.0355, 38.9775], {
+        balloonContent: 'Выберите адрес на карте'
+      }, {
+        draggable: true
+      });
+      
+      myMap.geoObjects.add(placemark);
+      
+      // Обновление адреса при перемещении метки
+      placemark.events.add('dragend', function (e) {
+        var coords = placemark.geometry.getCoordinates();
+        ymaps.geocode(coords).then(function (res) {
+          if (res.geoObjects.getLength() > 0) {
+            updateAddressInfo(res.geoObjects.get(0));
+          }
+        });
+      });
+      
+      // Обновление при поиске
+      searchControl.events.add('resultselect', function (e) {
+        var result = searchControl.getResults().get(e.get('resultIndex'));
+        var coords = result.geometry.getCoordinates();
+        placemark.geometry.setCoordinates(coords);
+        updateAddressInfo(result);
+      });
+      
+      // Обработчик клика по карте - перемещает метку
+      myMap.events.add('click', function (e) {
+        var coords = e.get('coords');
+        placemark.geometry.setCoordinates(coords);
+        ymaps.geocode(coords).then(function (res) {
+          if (res.geoObjects.getLength() > 0) {
+            updateAddressInfo(res.geoObjects.get(0));
+          }
+        });
+      });
+      
+      function updateAddressInfo(geoObject) {
+        var address = geoObject.getAddressLine();
+        var coords = geoObject.geometry.getCoordinates();
+        
+        document.getElementById('address-info').innerHTML = `
+          <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+            <p><strong>Адрес:</strong> <span style="color: var(--green-700);">${address}</span></p>
+            <p><strong>Координаты:</strong> ${coords[0].toFixed(6)}, ${coords[1].toFixed(6)}</p>
+          </div>
+        `;
+        
+        // Показываем кнопку сохранить
+        document.getElementById('save-address-btn').style.display = 'inline-block';
+        
+        // Сохраняем данные для отправки
+        window.selectedAddress = address;
+        window.selectedCoordinates = coords.join(',');
+      }
+      
+      // Функция для сохранения адреса через AJAX
+      window.saveAddress = function(address, coordinates) {
+        // Получаем CSRF token
+        var csrfToken = document.querySelector('[name=csrfmiddlewaretoken]');
+        if (!csrfToken) {
+          alert('Ошибка: CSRF token не найден');
+          return;
+        }
+        
+        // Отправляем AJAX запрос
+        fetch('/account/save-address/', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'X-CSRFToken': csrfToken.value,
+            'X-Requested-With': 'XMLHttpRequest'
+          },
+          body: new URLSearchParams({
+            'address': address,
+            'coordinates': coordinates
+          })
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            alert(data.message);
+            window.location.href = '/account/addresses/';
+          } else {
+            alert('Ошибка: ' + data.message);
+          }
+        })
+        .catch(error => {
+          console.error('Ошибка:', error);
+          alert('Ошибка при сохранении адреса');
+        });
+      };
+      
+      // Обработчик кнопки сохранить
+      document.getElementById('save-address-btn').addEventListener('click', function() {
+        if (window.selectedAddress && window.selectedCoordinates) {
+          saveAddress(window.selectedAddress, window.selectedCoordinates);
+        }
+      });
+    });
+  </script>
+{% endblock %}

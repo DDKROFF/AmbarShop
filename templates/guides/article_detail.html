@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ article.title }} - Амбар{% endblock %}
+
+{% block content %}
+  <section class="page-hero">
+    <div class="container page-hero-grid">
+      <div>
+        <p class="tag">Статья</p>
+        <h1>{{ article.title }}</h1>
+        <p>{{ article.created_at|date:"d.m.Y" }}</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="profile-container">
+        <aside class="profile-sidebar">
+          <nav class="profile-menu">
+            <a href="{% url 'guides:articles_list' %}">Все статьи</a>
+          </nav>
+        </aside>
+        
+        <main class="profile-content">
+          <div class="article-content card">
+            <div class="article-body">
+              {{ article.content|linebreaks }}
+            </div>
+            
+            <!-- Рейтинг статьи -->
+            <div class="article-rating" style="margin-top: 2rem; padding: 1.5rem; background: #f7fcf5; border-radius: 1rem;">
+              <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                <span style="font-size: 1.5rem; font-weight: 700;">{{ article.like_count }}</span>
+                <button type="button" class="btn btn-primary" style="padding: 0.5rem 1rem;" onclick="likeArticle({{ article.id }})">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/>
+                  </svg>
+                  <span style="margin-left: 0.5rem;">Полезно</span>
+                </button>
+                <button type="button" class="btn btn-secondary" style="padding: 0.5rem 1rem;" onclick="unlikeArticle({{ article.id }})">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3zm7-13h2.67A2.31 2.31 0 0 1 22 4v7a2.31 2.31 0 0 1-2.33 2H17"/>
+                  </svg>
+                  <span style="margin-left: 0.5rem;">Не полезно</span>
+                </button>
+              </div>
+              <p style="margin: 0; color: var(--muted);">Была ли эта статья полезной для вас?</p>
+            </div>
+            
+            <div style="margin-top: 2rem;">
+              <a href="{% url 'guides:articles_list' %}" class="btn btn-secondary">Вернуться к статьям</a>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+  </section>
+{% endblock %}
+
+{% block extra_scripts %}
+  <script>
+    // Лайк статьи
+    window.likeArticle = function(articleId) {
+      fetch('/guides/articles/' + articleId + '/like/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'X-CSRFToken': getCsrfToken()
+        }
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          // Обновляем страницу
+          location.reload();
+        }
+      })
+      .catch(error => {
+        console.error('Ошибка:', error);
+      });
+    };
+    
+    // Удаление лайка
+    window.unlikeArticle = function(articleId) {
+      if (!confirm('Вы хотите удалить свой лайк?')) {
+        return;
+      }
+      
+      fetch('/guides/articles/' + articleId + '/unlike/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'X-CSRFToken': getCsrfToken()
+        }
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          // Обновляем страницу
+          location.reload();
+        }
+      })
+      .catch(error => {
+        console.error('Ошибка:', error);
+      });
+    };
+    
+    function getCsrfToken() {
+      return document.querySelector('[name=csrfmiddlewaretoken]').value;
+    }
+  </script>
+{% endblock %}

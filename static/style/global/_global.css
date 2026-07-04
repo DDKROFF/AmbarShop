@@ -1,0 +1,354 @@
+:root {
+  color-scheme: light;
+  --red-500: #f85757;
+  --yellow-900: #b27c00;
+  --yellow-700: #d9a300;
+  --yellow-500: #ffd978;
+  --yellow-200: #3db63298;
+  --green-900: #40684c;
+  --green-700: #2d7a45;
+  --green-500: #6ace61;
+  --green-100: #e6f2e9;
+  --blue-500: #7ff4ff;
+  --text: #111c13;
+  --muted: #5a7060;
+  --border: rgba(28, 74, 42, 0.16);
+  --shadow: 0 18px 45px rgba(17, 28, 19, 0.08);
+}
+
+/* Common utility classes */
+.container {
+  width: min(1300px, calc(100% - 2rem));
+  margin: 0 auto;
+}
+
+.btn {
+  border: 2px solid var(--green-900);
+  background: var(--green-100);
+  color: var(--green-900);
+  padding: 0.7rem 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border-radius: 999px;
+}
+
+.btn:hover {
+  background: var(--green-900);
+  color: white;
+}
+
+.btn-primary {
+  background: var(--green-900);
+  color: white;
+}
+
+.btn-link {
+  background: transparent;
+  border-color: transparent;
+  color: var(--green-900);
+}
+
+.btn-link:hover {
+  background: rgba(115, 171, 121, 0.12);
+  color: var(--green-900);
+}
+
+.btn-account {
+  background: var(--yellow-900);
+  color: white;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.btn-account:hover {
+  background: var(--yellow-700);
+}
+
+.btn-secondary {
+  background: var(--muted);
+  color: white;
+  text-align: center;
+  display: block;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border-radius: 0.85rem;
+  font-weight: 600;
+  transition: background-color 0.2s ease;
+}
+
+.btn-secondary:hover {
+  background: rgba(28, 74, 42, 0.1);
+}
+
+.btn-secondary.inline {
+  display: inline-block;
+  width: auto;
+}
+
+.btn-danger {
+  background: var(--red-500);
+  color: white;
+  border: none;
+  padding: 0.7rem 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border-radius: 999px;
+}
+
+.btn-danger:hover {
+  background: #d64545;
+}
+
+.btn-large {
+  padding: 1rem 2rem;
+  font-size: 1.1rem;
+}
+
+.btn-remove {
+  margin-top: 0.25rem;
+}
+
+/* Form styles */
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  padding: 0.85rem 1rem;
+  border: 2px solid rgba(28, 74, 42, 0.18);
+  border-radius: 0.85rem;
+  font-size: 1rem;
+  transition: border-color 0.2s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: var(--green-700);
+}
+
+.form-group select {
+  background: white;
+  cursor: pointer;
+}
+
+.contact-form label {
+  display: grid;
+  gap: 0.5rem;
+  font-weight: 600;
+}
+
+.contact-form input,
+.contact-form textarea {
+  width: 100%;
+  padding: 0.85rem 1rem;
+  border: 2px solid rgba(28, 74, 42, 0.18);
+  border-radius: 0.85rem;
+  font-size: 1rem;
+  transition: border-color 0.2s ease;
+}
+
+.contact-form input:focus,
+.contact-form textarea:focus {
+  outline: none;
+  border-color: var(--green-700);
+}
+
+.contact-form textarea {
+  min-height: 160px;
+  resize: vertical;
+}
+
+/* Quantity Controls */
+.quantity-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.qty-btn {
+  width: 32px;
+  height: 32px;
+  border: 2px solid var(--border);
+  background: white;
+  color: var(--green-900);
+  border-radius: 0.5rem;
+  cursor: pointer;
+  font-size: 1.2rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.qty-btn:hover {
+  background: #f7fcf5;
+  border-color: var(--green-700);
+}
+
+.qty-btn:active {
+  transform: scale(0.95);
+}
+
+.qty-value {
+  font-weight: 600;
+  min-width: 40px;
+  text-align: center;
+}
+
+/* Cart summary common */
+.cart-summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.2rem;
+}
+
+.cart-summary strong {
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.cart-summary-total {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.cart-summary-total p {
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.cart-total-price {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--green-900);
+}
+
+/* Hero Actions */
+.hero-actions {
+  display: flex;
+  gap: 0.8rem;
+  flex-wrap: wrap;
+}
+
+.hero-actions .btn {
+  background: transparent;
+  border-color: white;
+  color: white;
+}
+
+.hero-actions .btn:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+/* Auth Modal */
+.auth-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(17, 28, 19, 0.58);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  z-index: 50;
+}
+
+.auth-modal.is-open {
+  display: flex;
+}
+
+.auth-modal .modal {
+  width: min(460px, 100%);
+  background: white;
+  border: 2px solid var(--green-900);
+  border-radius: 1.2rem;
+  padding: 1.25rem;
+  box-shadow: var(--shadow);
+}
+
+.auth-modal form {
+  display: grid;
+  gap: 0.8rem;
+  margin-top: 1rem;
+}
+
+.auth-modal input {
+  width: 100%;
+  border: 2px solid rgba(28, 74, 42, 0.25);
+  padding: 0.8rem 0.9rem;
+  border-radius: 0.8rem;
+}
+
+.auth-modal .modal-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.close-btn {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 1.2rem;
+  position: relative;
+  z-index: 1;
+  left: 68%;
+}
+
+.close-btn:hover {
+  background: rgba(28, 74, 42, 0.1);
+}
+
+/* Map Styles */
+.map-container {
+  width: 100%;
+  height: 500px;
+  border-radius: 1rem;
+  overflow: hidden;
+  background: #f7fcf5;
+}
+
+#map {
+  width: 100%;
+  height: 100%;
+}
+
+/* Pagination */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 2rem;
+  padding-top: 1rem;
+}
+
+.pagination span {
+  color: var(--muted);
+}
+
+/* Empty message */
+.empty-message {
+  padding: 3rem 2rem;
+  text-align: center;
+  border: 2px dashed var(--border);
+  border-radius: 0.9rem;
+  background: #fbfdf9;
+}
+
+.empty-message p {
+  margin-bottom: 1rem;
+  color: var(--muted);
+}

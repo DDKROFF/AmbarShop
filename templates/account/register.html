@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Регистрация - Амбар{% endblock %}
+
+{% block content %}
+  <section class="page-hero">
+    <div class="container page-hero-grid">
+      <div>
+        <p class="tag">Личный кабинет</p>
+        <h1>Регистрация</h1>
+        <p>Создайте аккаунт для оформления заказов</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="auth-container">
+        <div class="auth-form">
+          <h2>Регистрация</h2>
+          <form method="post" novalidate>
+            {% csrf_token %}
+            
+            {% if messages %}
+              <div class="messages">
+                {% for message in messages %}
+                  <div class="message {% if message.tags %}message-{{ message.tags }}{% endif %}">
+                    {{ message|safe }}
+                  </div>
+                {% endfor %}
+              </div>
+            {% endif %}
+            
+            <div class="form-group">
+              <label for="username">Имя пользователя</label>
+              {{ form.username }}
+              {% if form.username.errors %}
+                <span class="error">{{ form.username.errors }}</span>
+              {% endif %}
+            </div>
+            
+            <div class="form-group">
+              <label for="email">Email</label>
+              {{ form.email }}
+              {% if form.email.errors %}
+                <span class="error">{{ form.email.errors }}</span>
+              {% endif %}
+            </div>
+            
+            <div class="form-group">
+              <label for="phone">Телефон</label>
+              {{ form.phone }}
+              {% if form.phone.errors %}
+                <span class="error">{{ form.phone.errors }}</span>
+              {% endif %}
+              <small style="color: #888; font-size: 0.8rem;">Обязательное поле для связи</small>
+            </div>
+            
+            <div class="form-group">
+              <label for="password1">Пароль</label>
+              {{ form.password1 }}
+              {% if form.password1.errors %}
+                <span class="error">{{ form.password1.errors }}</span>
+              {% endif %}
+            </div>
+            
+            <div class="form-group">
+              <label for="password2">Подтверждение пароля</label>
+              {{ form.password2 }}
+              {% if form.password2.errors %}
+                <span class="error">{{ form.password2.errors }}</span>
+              {% endif %}
+            </div>
+            
+            <button type="submit" class="btn btn-primary">Зарегистрироваться</button>
+            
+            <p class="auth-link">
+              Уже есть аккаунт? <a href="{% url 'account:login' %}">Войти</a>
+            </p>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+{% endblock %}

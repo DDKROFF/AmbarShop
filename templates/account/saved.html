@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Избранное - Амбар{% endblock %}
+
+{% block content %}
+  <section class="page-hero">
+    <div class="container page-hero-grid">
+      <div>
+        <p class="tag">Избранное</p>
+        <h1>Ваш список избранных товаров</h1>
+        <p>Добавляйте товары в избранное для быстрого доступа</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="profile-container">
+        <aside class="profile-sidebar">
+          <nav class="profile-menu">
+            <a href="{% url 'account:profile' %}">Личные данные</a>
+            <a href="{% url 'account:orders' %}">Мои заказы</a>
+            <a href="{% url 'account:active_orders' %}">Активные заказы</a>
+            <a href="{% url 'account:addresses' %}">Адреса доставки</a>
+            <a href="{% url 'account:saved' %}" class="active">Избранное</a>
+            <a href="{% url 'account:settings' %}">Настройки</a>
+          </nav>
+        </aside>
+        
+        <main class="profile-content">
+          <div class="empty-message">
+            <p>Список избранных товаров пуст</p>
+            <a href="{% url 'shop:catalog' %}" class="btn btn-primary">Перейти в каталог</a>
+          </div>
+        </main>
+      </div>
+    </div>
+  </section>
+{% endblock %}

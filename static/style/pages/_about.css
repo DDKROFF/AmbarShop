@@ -1,0 +1,14 @@
+.feature-card {
+  min-height: 170px;
+}
+
+.feature-card strong {
+  display: block;
+  margin-bottom: 0.75rem;
+  color: var(--green-900);
+}
+
+.page-content.info-blocks {
+  display: grid;
+  gap: 1rem;
+}

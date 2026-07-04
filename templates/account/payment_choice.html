@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Оплата заказа - Амбар{% endblock %}
+
+{% block content %}
+  <section class="page-hero">
+    <div class="container page-hero-grid">
+      <div>
+        <p class="tag">Оплата</p>
+        <h1>Оплата заказа {{ order.id }}</h1>
+        <p>Выберите способ оплаты</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="profile-container">
+        <aside class="profile-sidebar">
+          <nav class="profile-menu">
+            <a href="{% url 'account:profile' %}">Личные данные</a>
+            <a href="{% url 'account:orders' %}">Мои заказы</a>
+            <a href="{% url 'account:active_orders' %}">Активные заказы</a>
+            <a href="{% url 'account:addresses' %}">Адреса доставки</a>
+            <a href="{% url 'account:cart' %}">Корзина</a>
+            <a href="{% url 'account:saved' %}">Избранное</a>
+            <a href="{% url 'account:settings' %}">Настройки</a>
+          </nav>
+        </aside>
+        
+        <main class="profile-content">
+          <div class="card" style="padding: 2rem;">
+            <h2 style="margin-top: 0;">Итого к оплате: {{ order.total_amount|floatformat:2 }} ₽</h2>
+            <p style="color: var(--muted); margin-bottom: 1.5rem;">Заказ #{{ order.id }}</p>
+            
+            <div style="display: flex; gap: 2rem; flex-wrap: wrap; margin-top: 2rem;">
+              <div style="flex: 1; min-width: 300px; padding: 2rem; background: #f0f9ff; border-radius: 1rem; text-align: center; border: 2px solid #e6f4ff;">
+                <h3 style="margin-top: 0; color: #0066cc;">QR-код для оплаты</h3>
+                <p style="color: var(--muted); margin-bottom: 1rem;">Отсканируйте QR-код в приложении банка</p>
+                <img src="{{ qr_payment_url }}" alt="QR-код для оплаты" style="max-width: 250px; margin: 0 auto 1rem auto;" />
+                <p style="font-size: 1.5rem; font-weight: 600; color: #0066cc; margin: 0;">{{ order.total_amount|floatformat:2 }} ₽</p>
+              </div>
+              
+              <div style="flex: 1; min-width: 300px; padding: 2rem; border: 2px solid var(--border); border-radius: 1rem; text-align: center; background: #f9fafb;">
+                <h3 style="margin-top: 0; color: var(--primary);">Ссылка для оплаты</h3>
+                <p style="color: var(--muted); margin-bottom: 1rem;">Откройте ссылку в браузере или скопируйте для оплаты</p>
+                <a href="{{ payment_url }}" class="btn btn-primary" style="display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
+                    <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
+                  </svg>
+                  Оплатить через СБП
+                </a>
+                <p style="color: var(--muted); font-size: 0.875rem; margin-top: 1rem;">
+                  Используйте приложение вашего банка для оплаты
+                </p>
+              </div>
+            </div>
+            <div style="margin-top: 2rem; text-align: center;">
+              <a href="{% url 'account:cart' %}" class="btn btn-secondary">Вернуться в корзину</a>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+  </section>
+{% endblock %}

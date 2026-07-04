@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Каталог товаров - Амбар{% endblock %}
+
+{% block content %}
+  <section class="page-hero">
+    <div class="container page-hero-grid">
+      <div>
+        <p class="tag">Каталог</p>
+        <h1>Товары для животных</h1>
+        <p>Широкий ассортимент зоотоваров по выгодным ценам</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Поисковая строка -->
+  <div class="search-bar">
+    <div class="container search-container">
+      <form method="get" action="{% url 'shop:catalog' %}" class="search-form">
+        <input type="text" name="q" placeholder="Поиск товаров..." value="{{ request.GET.q }}" />
+        <button type="submit" class="btn btn-primary">Поиск</button>
+      </form>
+    </div>
+  </div>
+
+  <section class="section">
+    <div class="container">
+      <div class="catalog-container">
+        <!-- Фильтры -->
+        <aside class="catalog-filters">
+          {% include "partials/_category_filter.html" %}
+          
+          <!-- Сортировка -->
+          <div class="filter-section">
+            <h3 class="filter-title">Сортировка</h3>
+            <form method="get" class="sort-form">
+              <select name="sort" class="sort-select" onchange="this.form.submit()">
+                <option value="">По умолчанию</option>
+                <option value="price-asc" {% if sort == 'price-asc' %}selected{% endif %}>Сначала дешевые</option>
+                <option value="price-desc" {% if sort == 'price-desc' %}selected{% endif %}>Сначала дорогие</option>
+              </select>
+              <input type="hidden" name="q" value="{{ request.GET.q }}" />
+              {% for cat in selected_categories %}
+                <input type="hidden" name="category" value="{{ cat }}" />
+              {% endfor %}
+            </form>
+          </div>
+        </aside>
+        
+        <!-- Сетка товаров -->
+        <main class="catalog-content">
+          <div class="catalog-header">
+            <p class="products-count">{{ products.paginator.count }} товаров</p>
+          </div>
+          
+          {% if products %}
+            <div class="products-grid">
+              {% for product in products %}
+                <div class="product-card">
+                  <div class="product-image">
+                    {% if product.images.all %}
+                      <img src="{{ product.images.all.0.image.url }}" alt="{{ product.name }}" />
+                    {% else %}
+                      <img src="{% static 'images/placeholder.jpg' %}" alt="{{ product.name }}" />
+                    {% endif %}
+                    {% if product.stock < 10 and product.stock > 0 %}
+                      <span class="stock-warning">Мало!</span>
+                    {% elif product.stock == 0 %}
+                      <span class="stock-out">Нет в наличии</span>
+                    {% endif %}
+                  </div>
+                  <div class="product-info">
+                    <h4 class="product-name">
+                      <a href="{% url 'shop:product_detail' product.slug %}">{{ product.name }}</a>
+                    </h4>
+                    <div class="product-price">{{ product.price|floatformat:2 }} ₽</div>
+                    <div class="product-stock">
+                      {% if product.stock > 0 %}
+                        В наличии: {{ product.stock }} шт.
+                      {% else %}
+                        Нет в наличии
+                      {% endif %}
+                    </div>
+                    <a href="{% url 'shop:product_detail' product.slug %}" class="btn btn-secondary product-card-btn">В корзину</a>
+                  </div>
+                </div>
+              {% endfor %}
+            </div>
+            
+            <!-- Пагинация -->
+            {% if products.has_other_pages %}
+              <div class="pagination">
+                {% if products.has_previous %}
+                  <a href="?{% if selected_categories %}{% for cat in selected_categories %}category={{ cat }}&{% endfor %}{% endif %}{% if query %}q={{ query }}&{% endif %}page={{ products.previous_page_number }}{% if sort %}&sort={{ sort }}{% endif %}" class="btn btn-secondary">← Предыдущая</a>
+                {% endif %}
+                
+                <span>Страница {{ products.number }} из {{ products.paginator.num_pages }}</span>
+                
+                {% if products.has_next %}
+                  <a href="?{% if selected_categories %}{% for cat in selected_categories %}category={{ cat }}&{% endfor %}{% endif %}{% if query %}q={{ query }}&{% endif %}page={{ products.next_page_number }}{% if sort %}&sort={{ sort }}{% endif %}" class="btn btn-secondary">Следующая →</a>
+                {% endif %}
+              </div>
+            {% endif %}
+          {% else %}
+            <div class="empty-message">
+              <p>Товары не найдены</p>
+            </div>
+          {% endif %}
+        </main>
+      </div>
+    </div>
+  </section>
+{% endblock %}

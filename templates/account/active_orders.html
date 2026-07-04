@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Активные заказы - Амбар{% endblock %}
+
+{% block content %}
+  <section class="page-hero">
+    <div class="container page-hero-grid">
+      <div>
+        <p class="tag">Активные заказы</p>
+        <h1>Текущие заказы</h1>
+        <p>Просмотр активных заказов в процессе выполнения</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="profile-container">
+        <aside class="profile-sidebar">
+          <nav class="profile-menu">
+            <a href="{% url 'account:profile' %}">Личные данные</a>
+            <a href="{% url 'account:orders' %}">Мои заказы</a>
+            <a href="{% url 'account:active_orders' %}" class="active">Активные заказы</a>
+            <a href="{% url 'account:addresses' %}">Адреса доставки</a>
+            <a href="{% url 'account:saved' %}">Избранное</a>
+            <a href="{% url 'account:settings' %}">Настройки</a>
+          </nav>
+        </aside>
+        
+        <main class="profile-content">
+          {% if messages %}
+            <div class="messages">
+              {% for message in messages %}
+                <div class="message {% if message.tags %}message-{{ message.tags }}{% endif %}">
+                  {{ message|safe }}
+                </div>
+              {% endfor %}
+            </div>
+          {% endif %}
+          
+          {% if page_obj %}
+            <div class="orders-list">
+              {% for order in page_obj %}
+                <div class="order-card card">
+                  <div class="order-header">
+                    <strong>Заказ #{{ order.id }}</strong>
+                    <span class="status order-status-{{ order.status }}">{{ order.get_status_display }}</span>
+                  </div>
+                  <div class="order-info">
+                    <p><strong>Дата:</strong> {{ order.created_at|date:"d.m.Y H:i" }}</p>
+                    <p><strong>Итоговая сумма:</strong> {{ order.total_amount }} ₽</p>
+                    <p><strong>Доставка:</strong> {{ order.delivery_method.name }}</p>
+                  </div>
+                  <div class="order-actions">
+                    <a href="#" class="btn btn-link">Детали заказа</a>
+                    <a href="#" class="btn btn-link">Отменить заказ</a>
+                  </div>
+                </div>
+              {% endfor %}
+            </div>
+
+            <!-- Пагинация -->
+            <div class="pagination">
+              {% if page_obj.has_previous %}
+                <a href="?page={{ page_obj.previous_page_number }}" class="btn">← Предыдущая</a>
+              {% endif %}
+              <span>Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}</span>
+              {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}" class="btn">Следующая →</a>
+              {% endif %}
+            </div>
+          {% else %}
+            <div class="empty-message">
+              <p>У вас пока нет активных заказов</p>
+              <a href="{% url 'shop:catalog' %}" class="btn btn-primary">Перейти в каталог</a>
+            </div>
+          {% endif %}
+        </main>
+      </div>
+    </div>
+  </section>
+{% endblock %}
