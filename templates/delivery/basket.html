@@ -16,18 +16,6 @@
 
   <section class="section">
     <div class="container">
-      <div class="profile-container">
-        <aside class="profile-sidebar">
-          <nav class="profile-menu">
-            <a href="{% url 'account:profile' %}">Личные данные</a>
-            <a href="{% url 'account:orders' %}">Мои заказы</a>
-            <a href="{% url 'account:active_orders' %}">Активные заказы</a>
-            <a href="{% url 'account:addresses' %}">Адреса доставки</a>
-            <a href="{% url 'account:saved' %}">Избранное</a>
-            <a href="{% url 'account:settings' %}">Настройки</a>
-          </nav>
-        </aside>
-        
         <main class="profile-content">
           {% if cart_items %}
             <div class="card" style="padding: 2rem;">

@@ -3,7 +3,7 @@ from .models import DeliveryAddress
 
 
 class DeliveryAddressForm(forms.ModelForm):
-    """Форма добавления адреса доставки с выпадающим списком городов"""
+    """Форма добавления адреса доставки с чекбоксом квартиры"""
     
     # Выпадающий список городов
     city = forms.ChoiceField(
@@ -14,14 +14,13 @@ class DeliveryAddressForm(forms.ModelForm):
     
     class Meta:
         model = DeliveryAddress
-        fields = ['city', 'street', 'house', 'apartment', 'entrance', 'floor', 'intercom']
+        fields = ['city', 'street', 'house', 'apartment', 'entrance', 'floor']
         labels = {
             'street': 'Улица',
             'house': 'Дом',
             'apartment': 'Квартира',
             'entrance': 'Подъезд',
             'floor': 'Этаж',
-            'intercom': 'Домофон',
         }
         widgets = {
             'street': forms.TextInput(attrs={'placeholder': 'Название улицы'}),
@@ -29,13 +28,11 @@ class DeliveryAddressForm(forms.ModelForm):
             'apartment': forms.TextInput(attrs={'placeholder': 'Номер квартиры'}),
             'entrance': forms.TextInput(attrs={'placeholder': 'Номер подъезда'}),
             'floor': forms.TextInput(attrs={'placeholder': 'Этаж'}),
-            'intercom': forms.TextInput(attrs={'placeholder': 'Код домофона'}),
         }
         help_texts = {
             'apartment': 'Необязательное поле',
             'entrance': 'Необязательное поле',
             'floor': 'Необязательное поле',
-            'intercom': 'Необязательное поле',
         }
 
     def __init__(self, *args, **kwargs):
@@ -112,14 +109,13 @@ class CheckoutAddressForm(forms.ModelForm):
     
     class Meta:
         model = DeliveryAddress
-        fields = ['city', 'street', 'house', 'apartment', 'entrance', 'floor', 'intercom', 'save_to_profile']
+        fields = ['city', 'street', 'house', 'apartment', 'entrance', 'floor', 'save_to_profile']
         labels = {
             'street': 'Улица',
             'house': 'Дом',
             'apartment': 'Квартира',
             'entrance': 'Подъезд',
             'floor': 'Этаж',
-            'intercom': 'Домофон',
         }
         widgets = {
             'street': forms.TextInput(attrs={'placeholder': 'Название улицы'}),
@@ -127,7 +123,6 @@ class CheckoutAddressForm(forms.ModelForm):
             'apartment': forms.TextInput(attrs={'placeholder': 'Номер квартиры'}),
             'entrance': forms.TextInput(attrs={'placeholder': 'Номер подъезда'}),
             'floor': forms.TextInput(attrs={'placeholder': 'Этаж'}),
-            'intercom': forms.TextInput(attrs={'placeholder': 'Код домофона'}),
         }
 
     def __init__(self, *args, **kwargs):

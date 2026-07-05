@@ -53,7 +53,7 @@ def articles_list_view(request):
     else:
         articles = Article.objects.filter(is_active=True).order_by('-created_at')
     
-    return render(request, 'guides/articles_list.html', {
+    return render(request, 'guides/guides.html', {
         'articles': articles,
         'query': query,
     })

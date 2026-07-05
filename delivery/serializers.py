@@ -14,6 +14,6 @@ class DeliveryAddressSerializer(serializers.ModelSerializer):
         model = DeliveryAddress
         fields = [
             'id', 'city', 'street', 'house',
-            'apartment', 'entrance', 'floor', 'intercom', 'full_address', 'coordinates', 'is_default'
+            'apartment', 'entrance', 'floor', 'full_address', 'is_default'
         ]
         read_only_fields = ['is_default']

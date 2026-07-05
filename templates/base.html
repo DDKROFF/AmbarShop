@@ -1,7 +1,7 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="ru">
-  <head>
+<head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{% block title %}Амбар — зоотовары и комбикорм{% endblock %}</title>
@@ -12,21 +12,110 @@
     <link rel="stylesheet" href="{% static 'style/style.css' %}" />
     <link rel="icon" type="image/svg+xml" href="{% static 'images/icons/Favicon.svg' %}" />
     {% block extra_head %}{% endblock %}
-  </head>
-  <body>
-    {% include "partials/header.html" %}
+</head>
+<body>
+<header class="site-header">
+    <div class="container nav-bar">
+        <a href="{% url 'home' %}">
+            <img class="logo" src="{% static 'images/icons/Logo.svg' %}" alt="Логотип магазина" title="Слово амбар и сельхоз животные" />
+        </a>
 
-    <main>
-      {% block content %}{% endblock %}
-    </main>
+        <button class="burger-menu" type="button" aria-label="Открыть меню">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
 
-    {% include "partials/footer.html" %}
+        <nav class="nav-links">
+            <a href="{% url 'home' %}">Главная</a>
+            <a href="{% url 'shop:catalog' %}">Каталог</a>
+            <a href="{% url 'account:cart' %}">Корзина</a>
+            <a href="{% url 'guides:guides' %}">Информация</a>
+            <a href="{% url 'shop:contacts' %}">Контакты</a>
+        </nav>
 
-    {% block modals %}{% endblock %}
+        {% if user.is_authenticated %}
+            <div class="auth-group">
+                <a href="{% url 'account:profile' %}" class="btn btn-primary">Личный кабинет</a>
+            </div>
+        {% else %}
+            <a href="{% url 'account:login' %}" class="btn btn-primary">Авторизироватся</a>
+        {% endif %}
+    </div>
 
-    <script src="{% static 'js/layout.js' %}"></script>
-    <script src="{% static 'js/main.js' %}"></script>
-    <script src="{% static 'js/mobile-menu.js' %}"></script>
-    {% block extra_scripts %}{% endblock %}
-  </body>
+    <div class="mobile-search">
+        <form method="get" action="{% url 'shop:catalog' %}" class="mobile-search-form">
+            <input type="text" name="q" placeholder="Поиск товаров..." value="{{ request.GET.q }}" />
+            <button type="submit" class="btn btn-primary">Поиск</button>
+        </form>
+    </div>
+
+    <div class="mobile-nav-overlay" id="mobileNavOverlay"></div>
+
+    <div class="mobile-nav" id="mobileNav">
+        <div class="mobile-nav-header">
+            <a href="{% url 'home' %}">
+                <img class="mobile-nav-logo" src="{% static 'images/icons/Logo.svg' %}" alt="Амбар" />
+            </a>
+            <button class="mobile-close-btn" type="button" aria-label="Закрыть меню">&times;</button>
+        </div>
+
+        <nav class="mobile-nav-links">
+            <a href="{% url 'home' %}">Главная</a>
+            <a href="{% url 'shop:catalog' %}">Каталог</a>
+            <a href="{% url 'account:cart' %}">Корзина</a>
+            <a href="{% url 'guides:guides' %}">Статьи</a>
+            <a href="{% url 'shop:contacts' %}">Контакты</a>
+
+            {% if user.is_authenticated %}
+                <div class="auth-group">
+                    <a href="{% url 'account:profile' %}" class="btn btn-primary" style="width: 100%; justify-content: center;">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                            <circle cx="12" cy="7" r="4"/>
+                        </svg>
+                        Личный кабинет
+                    </a>
+                    <a href="{% url 'account:logout' %}" class="btn btn-link" style="width: 100%; justify-content: center;">
+                        Выход
+                    </a>
+                </div>
+            {% else %}
+                <a href="{% url 'account:login' %}" class="auth-link">Авторизироватся</a>
+                <a href="{% url 'account:register' %}" class="btn btn-primary" style="width: 100%; justify-content: center;">
+                    Регистрация
+                </a>
+            {% endif %}
+        </nav>
+    </div>
+</header>
+
+<main>
+    {% block content %}{% endblock %}
+</main>
+
+<footer class="site-footer" id="contacts">
+    <div class="container footer-grid">
+        <div>
+            <div class="brand">Амбар</div>
+            <p>Зоотовары, корма и комбикорм для питомцев и хозяйства.</p>
+        </div>
+        <div>
+            <strong>Контакты</strong>
+            <p>+7 (900) 000-00-00</p>
+            <p>г. Белореченск, ул. Железнодорожная 80</p>
+        </div>
+        <div>
+            <strong>Режим работы</strong>
+            <p>Пн–Пт: 9:00 – 18:00</p>
+            <p>Сб-Вс: с 9:00 до 15:00</p>
+        </div>
+    </div>
+</footer>
+{% block modals %}{% endblock %}
+<script src="{% static 'js/layout.js' %}"></script>
+<script src="{% static 'js/main.js' %}"></script>
+<script src="{% static 'js/mobile-menu.js' %}"></script>
+{% block extra_scripts %}{% endblock %}
+</body>
 </html>

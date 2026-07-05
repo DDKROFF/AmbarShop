@@ -69,34 +69,15 @@
         <a href="{% url 'shop:catalog' %}">Все категории</a>
       </div>
       <div class="categories">
-        <a href="{% url 'shop:catalog' %}?category=korm-dlya-koshek" class="category-card card">
-          <img src="https://images.unsplash.com/photo-1535268647677-300dbf3d78d1?w=600&h=400&fit=crop&auto=format" alt="Корм для кошек" />
+        {% for category in categories %}
+        <a href="{% url 'shop:catalog' %}?category={{ category.slug }}" class="category-card card">
+          <img src="{% static 'images/Ug_korona.png' %}" alt="{{ category.name }}" />
           <div class="text">
-            <div class="card-title accent">Корм для кошек</div>
-            <div class="card-muted accent">64 товара</div>
+            <div class="card-title accent">{{ category.name }}</div>
+            <div class="card-muted accent">{{ category.products.count }} товар{{ category.products.count|pluralize:"а,ов,ов" }}</div>
           </div>
         </a>
-        <a href="{% url 'shop:catalog' %}?category=korm-dlya-sobak" class="category-card card">
-          <img src="https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=400&h=300&fit=crop&auto=format" alt="Корм для собак" />
-          <div class="text">
-            <div class="card-title accent">Корм для собак</div>
-            <div class="card-muted accent">71 товаров</div>
-          </div>
-        </a>
-        <a href="{% url 'shop:catalog' %}?category=kombikorm" class="category-card card">
-          <img src="https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=400&h=300&fit=crop&auto=format" alt="Комбикорм" />
-          <div class="text">
-            <div class="card-title accent">Комбикорм</div>
-            <div class="card-muted accent">37 товаров</div>
-          </div>
-        </a>
-        <a href="{% url 'shop:catalog' %}?category=ptitsa" class="category-card card">
-          <img src="https://images.unsplash.com/photo-1548550023-2bdb3c5beed7?w=400&h=300&fit=crop&auto=format" alt="Аксессуары" />
-          <div class="text">
-            <div class="card-title accent">Птица</div>
-            <div class="card-muted accent">10 товаров</div>
-          </div>
-        </a>
+        {% endfor %}
       </div>
     </div>
   </section>
@@ -108,27 +89,27 @@
         <a href="{% url 'shop:catalog' %}">Все товары</a>
       </div>
       <div class="grid-3">
+        {% for product in popular_products %}
         <article class="card product-card">
-          <img class="image-box" src="{% static 'images/Ug_korona.png' %}" alt="Комбикорм для несушек"/>
+          {% if product.images.all %}
+            <img class="image-box" src="{{ product.images.all.0.image.url }}" alt="{{ product.name }}"/>
+          {% else %}
+            <img class="image-box" src="{% static 'images/Ug_korona.png' %}" alt="{{ product.name }}"/>
+          {% endif %}
+          {% if product.stock > 50 %}
           <span class="tag">Хит продаж</span>
-          <div class="card-title">Комбикорм для несушек</div>
-          <div class="price">1 650 ₽</div>
-          <a href="{% url 'shop:product_detail' 'kombikorm-dlya-nesuhek' %}" class="btn btn-primary">Подробнее</a>
-        </article>
-        <article class="card product-card">
-          <img class="image-box" src="{% static 'images/All_dogs.png' %}" alt="Корм для собак"/>
+          {% elif product.stock > 0 %}
           <span class="tag">В наличии</span>
-          <div class="card-title">Корм для собак All dogs</div>
-          <div class="price">4 890 ₽</div>
-          <a href="{% url 'shop:product_detail' 'korm-dlya-sobak-all-dogs' %}" class="btn btn-primary">Подробнее</a>
+          {% else %}
+          <span class="tag">Нет в наличии</span>
+          {% endif %}
+          <div class="card-title">{{ product.name }}</div>
+          <div class="price">{{ product.price|floatformat:0 }} ₽</div>
+          <a href="{% url 'shop:product_detail' product.slug %}" class="btn btn-primary">Подробнее</a>
         </article>
-        <article class="card product-card">
-          <img class="image-box" src="{% static 'images/Karmy_cat.png' %}" alt="Корм для кошек"/>
-          <span class="tag">В наличии</span>
-          <div class="card-title">Karmy корм для кошек</div>
-          <div class="price">5 240 ₽</div>
-          <a href="{% url 'shop:product_detail' 'karmy-korm-dlya-koshek' %}" class="btn btn-primary">Подробнее</a>
-        </article>
+        {% empty %}
+        <p class="no-products">Популярные товары пока отсутствуют</p>
+        {% endfor %}
       </div>
     </div>
   </section>
@@ -138,7 +119,7 @@
       <article class="card">
         <h3>Информация для поставщиков</h3>
         <p>Принимаем поставки кормов и товаров. Смотреть ниже.</p>
-        <a class="btn btn-primary" href="{% url 'guides:guides' %}">Узнать условия</a>
+        <a class="btn btn-primary" href="{% url 'shop:contacts' %}">Узнать условия</a>
       </article>
       <article class="card">
         <h3>Программа лояльности</h3>
@@ -159,12 +140,13 @@
           {% for review in reviews %}
             <article class="card review-card">
               <div class="review-header">
-                <strong>{{ review.name|default:"Покупатель" }}</strong>
+                <strong>{{ review.user.username|default:"Покупатель" }}</strong>
                 <span>Купил товар</span>
               </div>
               <div class="review-stars" aria-label="Рейтинг {{ review.rating }} звезд">
-                {% for i in ""|default_if_none:""|cut:""|ljust:review.rating %}★{% endfor %}
-                {% for i in ""|default_if_none:""|cut:""|ljust:5|cut:review.rating %}☆{% endfor %}
+                {% for i in "12345" %}
+                  {% if forloop.counter <= review.rating %}★{% else %}☆{% endif %}
+                {% endfor %}
               </div>
               <p>{{ review.comment|truncatechars:150 }}</p>
             </article>

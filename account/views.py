@@ -192,7 +192,6 @@ def save_address_view(request):
             apartment = request.POST.get('apartment', '').strip()
             entrance = request.POST.get('entrance', '').strip()
             floor = request.POST.get('floor', '').strip()
-            intercom = request.POST.get('intercom', '').strip()
             
             full_address = f"{city}, {street}, д. {house}"
             if apartment:
@@ -206,9 +205,7 @@ def save_address_view(request):
                 apartment=apartment,
                 entrance=entrance,
                 floor=floor,
-                intercom=intercom,
                 full_address=full_address,
-                coordinates='',
                 is_active=True
             )
             
@@ -466,7 +463,6 @@ def checkout_view(request):
                     apartment = form.cleaned_data.get('apartment', '').strip()
                     entrance = form.cleaned_data.get('entrance', '').strip()
                     floor = form.cleaned_data.get('floor', '').strip()
-                    intercom = form.cleaned_data.get('intercom', '').strip()
                     
                     full_address = f"{city}, {street}, д. {house}"
                     if apartment:
@@ -480,9 +476,7 @@ def checkout_view(request):
                         apartment=apartment,
                         entrance=entrance,
                         floor=floor,
-                        intercom=intercom,
                         full_address=full_address,
-                        coordinates='',
                         is_active=True
                     )
             
@@ -536,7 +530,6 @@ def checkout_view(request):
                 'apartment': last_address.apartment or '',
                 'entrance': last_address.entrance or '',
                 'floor': last_address.floor or '',
-                'intercom': last_address.intercom or '',
             })
     
     return render(request, 'account/checkout.html', {

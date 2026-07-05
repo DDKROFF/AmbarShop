@@ -27,11 +27,8 @@
   <section class="section">
     <div class="container">
       <div class="catalog-container">
-        <!-- Фильтры -->
         <aside class="catalog-filters">
           {% include "partials/_category_filter.html" %}
-          
-          <!-- Сортировка -->
           <div class="filter-section">
             <h3 class="filter-title">Сортировка</h3>
             <form method="get" class="sort-form">
@@ -47,13 +44,11 @@
             </form>
           </div>
         </aside>
-        
-        <!-- Сетка товаров -->
+
         <main class="catalog-content">
           <div class="catalog-header">
             <p class="products-count">{{ products.paginator.count }} товаров</p>
           </div>
-          
           {% if products %}
             <div class="products-grid">
               {% for product in products %}
@@ -82,13 +77,11 @@
                         Нет в наличии
                       {% endif %}
                     </div>
-                    <a href="{% url 'shop:product_detail' product.slug %}" class="btn btn-secondary product-card-btn">В корзину</a>
+                    <a href="{% url 'shop:product_detail' product.slug %}" class="btn btn-primary">Подробнее</a>
                   </div>
                 </div>
               {% endfor %}
             </div>
-            
-            <!-- Пагинация -->
             {% if products.has_other_pages %}
               <div class="pagination">
                 {% if products.has_previous %}

@@ -26,12 +26,10 @@ class DeliveryAddress(models.Model):
     apartment = models.CharField(max_length=20, blank=True, verbose_name='Квартира')
     entrance = models.CharField(max_length=20, blank=True, verbose_name='Подъезд')
     floor = models.CharField(max_length=20, blank=True, verbose_name='Этаж')
-    intercom = models.CharField(max_length=50, blank=True, verbose_name='Домофон')
     full_address = models.TextField(blank=True, verbose_name='Полный адрес')
-    coordinates = models.CharField(max_length=100, blank=True, verbose_name='Координаты (широта,долгота)')
     is_default = models.BooleanField(default=False, verbose_name='Адрес по умолчанию')
     is_active = models.BooleanField(default=True, verbose_name='Активен')
-    created_by = models.ForeignKey('account.User', on_delete=models.SET_NULL, null=True, related_name='addresses', verbose_name='Создано пользователем')
+    created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, related_name='addresses', verbose_name='Создано пользователем')
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Создано')
 
     class Meta:

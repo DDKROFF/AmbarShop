@@ -6,13 +6,28 @@ from .serializers import CategorySerializer, ProductSerializer
 from django.core.paginator import Paginator
 from django.core.mail import send_mail
 from django.conf import settings
+from django.db import models
 
 
 def home_view(request):
     reviews = Review.objects.filter(is_moderated=True).order_by('?')[:3]
     
+    # Получаем популярные товары (ограничиваем 3 штуками)
+    popular_products = Product.objects.filter(popular=True, is_active=True)[:3]
+    
+    # Если популярных товаров меньше 3, добавляем случайные
+    if popular_products.count() < 3:
+        additional_count = 3 - popular_products.count()
+        additional_products = Product.objects.filter(is_active=True).exclude(id__in=popular_products.values_list('id', flat=True)).order_by('?')[:additional_count]
+        popular_products = list(popular_products) + list(additional_products)
+    
+    # Получаем категории для отображения на главной
+    categories = Category.objects.filter(is_active=True).order_by('name')
+    
     return render(request, 'home.html', {
         'reviews': reviews,
+        'popular_products': popular_products,
+        'categories': categories,
     })
 
 
