@@ -9,132 +9,133 @@
       <div>
         <p class="tag">Оформление заказа</p>
         <h1>Оформление заказа</h1>
-        <p>Заполните данные для доставки</p>
+        <p>Заполните данные для быстрой доставки</p>
       </div>
-      <a href="{% url 'account:cart' %}" class="btn btn-link">Назад в корзину</a>
     </div>
   </section>
 
   <section class="section">
     <div class="container">
+      <div class="profile-container">
+        <aside class="profile-sidebar">
+          <nav class="profile-menu">
+            <a href="{% url 'account:profile' %}">Личные данные</a>
+            <a href="{% url 'account:orders' %}">Мои заказы</a>
+            <a href="{% url 'account:active_orders' %}">Активные заказы</a>
+            <a href="{% url 'account:addresses' %}">Адреса доставки</a>
+            <a href="{% url 'account:saved' %}">Избранное</a>
+            <a href="{% url 'account:settings' %}">Настройки</a>
+          </nav>
+        </aside>
+        
         <main class="profile-content">
-          <div class="checkout-container">
-            <form method="post">
+          <div class="profile-section">
+            <h2>Личные данные</h2>
+            <form class="profile-form" id="checkoutForm" method="POST">
               {% csrf_token %}
               
+              <!-- Личные данные -->
               <div class="form-group">
-                <label for="id_first_name">Имя</label>
-                {{ form.first_name }}
-                {% if form.first_name.errors %}
-                  <span class="error">{{ form.first_name.errors }}</span>
-                {% endif %}
+                <label>Имя <span style="color: #f56565;">*</span></label>
+                <input type="text" name="first_name" id="id_first_name" value="{{ initial_data.first_name|default:'' }}" placeholder="Ваше имя" required />
               </div>
               
               <div class="form-group">
-                <label for="id_last_name">Фамилия</label>
-                {{ form.last_name }}
-                {% if form.last_name.errors %}
-                  <span class="error">{{ form.last_name.errors }}</span>
-                {% endif %}
+                <label>Фамилия <span style="color: #f56565;">*</span></label>
+                <input type="text" name="last_name" id="id_last_name" value="{{ initial_data.last_name|default:'' }}" placeholder="Ваша фамилия" required />
               </div>
               
               <div class="form-group">
-                <label for="id_phone">Телефон</label>
-                {{ form.phone }}
-                {% if form.phone.errors %}
-                  <span class="error">{{ form.phone.errors }}</span>
-                {% endif %}
+                <label>Телефон <span style="color: #f56565;">*</span></label>
+                <input type="tel" name="phone" id="id_phone" value="{{ initial_data.phone|default:'' }}" placeholder="+7 (999) 000-00-00" required />
               </div>
               
               <div class="form-group">
-                <label for="id_email">Email</label>
-                {{ form.email }}
-                {% if form.email.errors %}
-                  <span class="error">{{ form.email.errors }}</span>
-                {% endif %}
+                <label>Email <span style="color: #f56565;">*</span></label>
+                <input type="email" name="email" id="id_email" value="{{ initial_data.email|default:'' }}" placeholder="Ваш email" required />
               </div>
               
-              <div class="form-group">
-                <label for="id_city">Город</label>
-                {{ form.city }}
-                {% if form.city.errors %}
-                  <span class="error">{{ form.city.errors }}</span>
-                {% endif %}
-              </div>
+              <!-- Доставка -->
+              <h2 style="margin-top: 2rem; margin-bottom: 1.5rem; color: var(--green-900);">Доставка</h2>
               
               <div class="form-group">
-                <label for="id_street">Улица</label>
-                {{ form.street }}
-                {% if form.street.errors %}
-                  <span class="error">{{ form.street.errors }}</span>
-                {% endif %}
-              </div>
-              
-              <div class="form-group">
-                <label for="id_house">Дом</label>
-                {{ form.house }}
-                {% if form.house.errors %}
-                  <span class="error">{{ form.house.errors }}</span>
-                {% endif %}
-              </div>
-              
-              <div class="form-group">
-                <label for="id_apartment">Квартира</label>
-                {{ form.apartment }}
-                {% if form.apartment.errors %}
-                  <span class="error">{{ form.apartment.errors }}</span>
-                {% endif %}
-              </div>
-              
-              <div class="form-group">
-                <label for="id_entrance">Подъезд</label>
-                {{ form.entrance }}
-                {% if form.entrance.errors %}
-                  <span class="error">{{ form.entrance.errors }}</span>
-                {% endif %}
-              </div>
-              
-              <div class="form-group">
-                <label for="id_floor">Этаж</label>
-                {{ form.floor }}
-                {% if form.floor.errors %}
-                  <span class="error">{{ form.floor.errors }}</span>
-                {% endif %}
-              </div>
-              
-              <div class="form-group">
-                <label for="id_intercom">Домофон</label>
-                {{ form.intercom }}
-                {% if form.intercom.errors %}
-                  <span class="error">{{ form.intercom.errors }}</span>
-                {% endif %}
-              </div>
-              
-              <div class="form-group">
-                <label for="id_delivery_method">Способ доставки</label>
-                <select name="delivery_method">
+                <label>Способ доставки <span style="color: #f56565;">*</span></label>
+                <select name="delivery_method" id="id_delivery_method" class="form-select" style="width: 100%; padding: 0.85rem 1rem; border: 2px solid var(--border); border-radius: 0.5rem; font-size: 1rem;">
+                  <option value="" disabled selected>Выберите способ доставки</option>
                   <option value="courier">Курьерская доставка</option>
                   <option value="pickup">Самовывоз</option>
                 </select>
               </div>
               
-              <div class="form-group">
-                <label for="id_comment">Комментарий к заказу</label>
-                {{ form.comment }}
-              </div>
-              
-              <div class="cart-summary">
-                <div class="cart-summary-total">
-                  <p>Итого:</p>
-                  <p class="cart-total-price">{{ cart.get_total_price|floatformat:2 }} ₽</p>
+              <!-- Адрес доставки (показывается только для курьера) -->
+              <div id="addressSection" style="display: none; margin-top: 1.5rem; padding-top: 1.5rem; border-top: 2px solid var(--border);">
+                <h3 style="margin-bottom: 1.25rem; color: var(--green-900);">Адрес доставки</h3>
+                
+                <div class="form-group">
+                  <label>Город <span style="color: #f56565;">*</span></label>
+                  <select name="city" id="id_city" class="form-select" style="width: 100%; padding: 0.85rem 1rem; border: 2px solid var(--border); border-radius: 0.5rem; font-size: 1rem;">
+                    <option value="" disabled selected>Выберите город</option>
+                    {% for city_code, city_name in delivery_cities %}
+                      <option value="{{ city_code }}" {% if initial_data.city == city_code or request.GET.city == city_code %}selected{% endif %}>{{ city_name }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+                
+                <div class="form-group">
+                  <label>Улица <span style="color: #f56565;">*</span></label>
+                  <input type="text" name="street" id="id_street" value="{{ initial_data.street|default:'' }}" placeholder="Название улицы" required />
+                </div>
+                
+                <div class="form-group">
+                  <label>Дом <span style="color: #f56565;">*</span></label>
+                  <input type="text" name="house" id="id_house" value="{{ initial_data.house|default:'' }}" placeholder="Номер дома" required />
+                </div>
+                
+                <div class="form-group">
+                  <label>Офис/квартира</label>
+                  <div style="display: flex; align-items: center; gap: 0.75rem;">
+                    <input type="checkbox" id="id_has_apartment" name="has_apartment" {% if initial_data.apartment %}checked{% endif %} style="width: 24px; height: 24px; cursor: pointer;">
+                    <span style="font-size: 1rem; cursor: pointer;" onclick="document.getElementById('id_has_apartment').click()">Офис/квартира</span>
+                  </div>
+                </div>
+                
+                <div id="apartmentFields" style="display: none;">
+                  <div class="form-group">
+                    <label>Подъезд</label>
+                    <input type="text" name="entrance" id="id_entrance" value="{{ initial_data.entrance|default:'' }}" placeholder="Номер подъезда" />
+                  </div>
+                  <div class="form-group">
+                    <label>Этаж</label>
+                    <input type="text" name="floor" id="id_floor" value="{{ initial_data.floor|default:'' }}" placeholder="Этаж" />
+                  </div>
+                  <div class="form-group">
+                    <label>Квартира/Офис</label>
+                    <input type="text" name="apartment" id="id_apartment" value="{{ initial_data.apartment|default:'' }}" placeholder="Номер квартиры/офиса" />
+                  </div>
                 </div>
               </div>
               
-              <button type="submit" class="btn btn-primary btn-large">Оплатить</button>
+              <!-- Комментарий -->
+              <div class="form-group">
+                <label>Комментарий к заказу</label>
+                <textarea name="comment" id="id_comment" rows="4" placeholder="Дополнительная информация" style="width: 100%; padding: 0.85rem 1rem; border: 2px solid var(--border); border-radius: 0.5rem; font-size: 1rem; resize: vertical;">{{ initial_data.comment|default:'' }}</textarea>
+              </div>
+              
+              <!-- Сумма -->
+              <div style="display: flex; justify-content: space-between; align-items: center; padding: 1.5rem; margin-top: 2rem; background: #f7fcf5; border-radius: 0.9rem;">
+                <p style="margin: 0; font-size: 1.2rem; font-weight: 600; color: var(--green-900);">Итого:</p>
+                <p style="margin: 0; font-size: 2rem; font-weight: 800; color: var(--green-900);">{{ cart.get_total_price|floatformat:2 }} ₽</p>
+              </div>
+              
+              <button type="submit" class="btn btn-primary btn-large" style="width: 100%; margin-top: 1.5rem;">Оформить заказ</button>
             </form>
           </div>
         </main>
       </div>
     </div>
   </section>
+{% endblock %}
+
+{% block extra_scripts %}
+  <script src="{% static 'js/checkout.js' %}"></script>
 {% endblock %}

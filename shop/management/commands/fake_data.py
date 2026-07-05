@@ -58,7 +58,20 @@ class Command(BaseCommand):
         for product_data in products_data:
             product = Product.objects.create(**product_data)
             self.add_product_image(product, product_data['name'])
-            user, _ = User.objects.get_or_create(email=f'user{product.id}@example.com', defaults={'username': f'user{product.id}'})
+            # Создаем пользователя с email как идентификатором
+            first_names = ['Иван', 'Мария', 'Петр', 'Анна', 'Сергей', 'Елена', 'Алексей', 'Ольга', 'Дмитрий', 'Татьяна']
+            last_names = ['Иванов', 'Петрова', 'Сидоров', 'Кузнецова', 'Смирнов', 'Попова', 'Васильев', 'Михайлова', 'Макаров', 'Николаева']
+            middle_names = ['Иванович', 'Петровна', 'Сидорович', 'Андреевна', 'Сергеевич', 'Владимировна', 'Алексеевич', 'Сергеевна', 'Дмитриевич', 'Фёдоровна']
+            
+            user, _ = User.objects.get_or_create(
+                email=f'user{product.id}@example.com',
+                defaults={
+                    'first_name': first_names[product.id % len(first_names)],
+                    'last_name': last_names[product.id % len(last_names)],
+                    'middle_name': middle_names[product.id % len(middle_names)],
+                    'phone': f'+7 (900) 000-00-{str(product.id).zfill(2)}',
+                }
+            )
             self.create_review(user, product)
             self.stdout.write(self.style.SUCCESS(f'Товар "{product.name}" готов'))
 

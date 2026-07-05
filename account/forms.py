@@ -7,25 +7,23 @@ from .models import User, Review
 class UserRegistrationForm(UserCreationForm):
     email = forms.EmailField(required=True, label='Email')
     phone = forms.CharField(max_length=20, required=True, label='Телефон')
-    first_name = forms.CharField(max_length=150, required=False, label='Имя')
-    last_name = forms.CharField(max_length=150, required=False, label='Фамилия')
+    first_name = forms.CharField(max_length=150, required=True, label='Имя')
+    last_name = forms.CharField(max_length=150, required=True, label='Фамилия')
 
     class Meta:
         model = User
-        fields = ['username', 'email', 'phone', 'first_name', 'last_name', 'password1', 'password2']
+        fields = ['email', 'phone', 'first_name', 'last_name', 'password1', 'password2']
         labels = {
-            'username': 'Имя пользователя',
             'email': 'Email',
             'phone': 'Телефон',
             'first_name': 'Имя',
             'last_name': 'Фамилия',
         }
         help_texts = {
-            'first_name': 'Можно не заполнять',
-            'last_name': 'Можно не заполнять',
+            'first_name': 'Обязательное поле',
+            'last_name': 'Обязательное поле',
         }
         widgets = {
-            'username': forms.TextInput(attrs={'placeholder': 'Введите имя пользователя'}),
             'email': forms.EmailInput(attrs={'placeholder': 'Ваш email'}),
             'phone': forms.TextInput(attrs={'placeholder': '+7 (999) 000-00-00'}),
             'first_name': forms.TextInput(attrs={'placeholder': 'Ваше имя'}),
@@ -52,8 +50,6 @@ class UserRegistrationForm(UserCreationForm):
         if User.objects.filter(email=email).exists():
             raise forms.ValidationError('Этот email уже зарегистрирован')
         return email
-
-    def clean_phone(self):
         phone = self.cleaned_data.get('phone')
         phone_digits = ''.join(filter(str.isdigit, phone))
         if len(phone_digits) < 10:
@@ -80,6 +76,19 @@ class UserRegistrationForm(UserCreationForm):
         if password1 and password2 and password1 != password2:
             raise forms.ValidationError('Пароли не совпадают')
         return password2
+
+    def clean(self):
+        cleaned_data = super().clean()
+        password1 = cleaned_data.get('password1')
+        password2 = cleaned_data.get('password2')
+        
+        if password1 and password2 and password1 != password2:
+            raise forms.ValidationError('Пароли не совпадают')
+        
+        if password1 and len(password1) < 8:
+            raise forms.ValidationError('Пароль должен содержать минимум 8 символов')
+        
+        return cleaned_data
 
 
 class ReviewForm(forms.ModelForm):
@@ -110,34 +119,46 @@ class UserProfileForm(forms.ModelForm):
     """Форма редактирования профиля"""
     first_name = forms.CharField(
         max_length=150,
-        required=False,
+        required=True,
         label='Имя',
         widget=forms.TextInput(attrs={'placeholder': 'Ваше имя'})
     )
     last_name = forms.CharField(
         max_length=150,
-        required=False,
+        required=True,
         label='Фамилия',
         widget=forms.TextInput(attrs={'placeholder': 'Ваша фамилия'})
+    )
+    middle_name = forms.CharField(
+        max_length=150,
+        required=False,
+        label='Отчество',
+        widget=forms.TextInput(attrs={'placeholder': 'Ваше отчество'}),
+        help_text='Необязательное поле'
     )
 
     class Meta:
         model = User
-        fields = ['username', 'first_name', 'last_name']
+        fields = ['email', 'first_name', 'last_name', 'middle_name', 'phone']
         labels = {
-            'username': 'Имя пользователя',
+            'email': 'Email',
             'first_name': 'Имя',
             'last_name': 'Фамилия',
+            'middle_name': 'Отчество',
+            'phone': 'Телефон',
         }
         widgets = {
-            'username': forms.TextInput(attrs={'readonly': 'readonly', 'placeholder': 'Ваше имя пользователя'}),
+            'email': forms.EmailInput(attrs={'placeholder': 'Ваш email'}),
             'first_name': forms.TextInput(attrs={'placeholder': 'Ваше имя'}),
             'last_name': forms.TextInput(attrs={'placeholder': 'Ваша фамилия'}),
+            'middle_name': forms.TextInput(attrs={'placeholder': 'Ваше отчество'}),
+            'phone': forms.TextInput(attrs={'placeholder': '+7 (999) 000-00-00'}),
         }
         help_texts = {
-            'first_name': 'Можно не заполнять',
-            'last_name': 'Можно не заполнять',
-            'username': 'Имя пользователя (неизменяемое)',
+            'email': 'Используется для входа в аккаунт',
+            'first_name': 'Обязательное поле',
+            'last_name': 'Обязательное поле',
+            'phone': 'Обязательное поле для связи',
         }
 
 
@@ -171,14 +192,15 @@ class ChangePasswordForm(forms.Form):
 
     def clean(self):
         cleaned_data = super().clean()
-        new_password = cleaned_data.get('new_password')
-        confirm_password = cleaned_data.get('confirm_password')
-
-        if new_password and confirm_password:
-            if new_password != confirm_password:
-                raise forms.ValidationError('Новый пароль и его подтверждение не совпадают')
-            if len(new_password) < 8:
-                raise forms.ValidationError('Пароль должен содержать минимум 8 символов')
+        password1 = cleaned_data.get('password1')
+        password2 = cleaned_data.get('password2')
+        
+        if password1 and password2 and password1 != password2:
+            raise forms.ValidationError('Пароли не совпадают')
+        
+        if password1 and len(password1) < 8:
+            raise forms.ValidationError('Пароль должен содержать минимум 8 символов')
+        
         return cleaned_data
 
 

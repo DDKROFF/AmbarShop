@@ -31,39 +31,47 @@
         <main class="profile-content">
           <div class="profile-section">
             <h2>Личные данные</h2>
-            <form class="profile-form">
+            
+            <div class="profile-form">
               <div class="form-group">
-                <label>Имя пользователя</label>
-                <input type="text" value="{{ user.username }}" readonly />
+                <label>Email (идентификатор)</label>
+                <div class="static-text">{{ user.email }}</div>
               </div>
+              
               <div class="form-group">
-                <label>Фамилия <span style="color: #888; font-size: 0.8rem;">(необязательно)</span></label>
-                <input type="text" value="{{ user.first_name }}" placeholder="Ваша фамилия" />
+                <label>Имя</label>
+                <div class="static-text">{{ user.first_name|default:'-' }}</div>
               </div>
+              
               <div class="form-group">
-                <label>Отчество <span style="color: #888; font-size: 0.8rem;">(необязательно)</span></label>
-                <input type="text" value="{{ user.last_name }}" placeholder="Ваше отчество" />
+                <label>Фамилия</label>
+                <div class="static-text">{{ user.last_name|default:'-' }}</div>
               </div>
+              
               <div class="form-group">
-                <label>Email</label>
-                <input type="email" value="{{ user.email }}" readonly />
+                <label>Отчество</label>
+                <div class="static-text">{{ user.middle_name|default:'-' }}</div>
               </div>
+              
               <div class="form-group">
                 <label>Телефон</label>
-                <input type="tel" value="{{ user.phone|default:'' }}" placeholder="+7 (999) 000-00-00" />
+                <div class="static-text">{{ user.phone|default:'-' }}</div>
               </div>
+              
               <div class="form-group">
                 <label>Адрес по умолчанию</label>
-                <input type="text" value="{{ user_address|default:'-' }}" readonly />
+                <div class="static-text">{{ user_address|default:'-' }}</div>
               </div>
+              
               <p style="color: #666; font-size: 0.85rem; margin-top: 1rem; padding: 1rem; background: #f0f7f0; border-radius: 0.5rem;">
-                <strong>Важно:</strong> Для изменения номера телефона, email или пароля перейдите в раздел "Настройки".
+                <strong>Важно:</strong> Для изменения данных перейдите в раздел "Настройки" или нажмите кнопку редактирования.
               </p>
+              
               <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
                 <a href="{% url 'account:edit_profile' %}" class="btn btn-primary">Редактировать данные</a>
                 <a href="{% url 'account:logout' %}" class="btn">Выйти</a>
               </div>
-            </form>
+            </div>
           </div>
         </main>
       </div>

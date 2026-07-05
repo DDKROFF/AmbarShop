@@ -125,6 +125,13 @@ select {
   background: var(--green-100);
 }
 
+.cart-badge {
+    background: var(--green-700);
+    padding: 1px 6px;
+    border-radius: 999px;
+    color: white;
+}
+
 .site-footer {
   padding: 2.5rem 0 1.8rem;
   color: var(--muted);
@@ -388,6 +395,18 @@ select {
 .profile-form input:read-only {
   background: #f7fcf5;
   cursor: not-allowed;
+}
+
+.static-text {
+  padding: 0.85rem 1rem;
+  border: 2px solid var(--border);
+  border-radius: 0.5rem;
+  background: #f7fcf5;
+  font-size: 1rem;
+  color: var(--text);
+  min-height: 44px;
+  display: flex;
+  align-items: center;
 }
 
 /* Catalog Styles */
@@ -895,6 +914,55 @@ select {
 
 .mobile-nav-links a.auth-link:hover {
   background: var(--yellow-700);
+}
+
+/* Mobile Cart Badge */
+@media (max-width: 768px) {
+  .nav-links {
+    display: none;
+  }
+  
+  .mobile-nav-links {
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+    gap: 0.25rem;
+    overflow-y: auto;
+  }
+  
+  .mobile-nav-links a {
+    padding: 1rem 1.25rem;
+    border-radius: 0.75rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+  }
+  
+  .mobile-nav-links a:hover {
+    background: var(--green-100);
+    color: var(--green-900);
+  }
+  
+  .mobile-nav-links a.cart-link {
+    position: relative;
+  }
+  
+  .mobile-nav-links .cart-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    min-width: 24px;
+    height: 24px;
+    padding: 0 6px;
+    border-radius: 50%;
+    background: var(--green-700);
+    color: white;
+    font-size: 0.75rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid white;
+  }
 }
 
 /* Mobile Search */

@@ -33,7 +33,10 @@ def register_view(request):
     if request.method == 'POST':
         form = UserRegistrationForm(request.POST)
         if form.is_valid():
-            form.save()
+            user = form.save(commit=False)
+            # Автоматически генерируем username из email для совместимости
+            user.username = form.cleaned_data['email'].split('@')[0]
+            user.save()
             messages.success(request, 'Регистрация прошла успешно!')
             return redirect('account:login')
         else:
@@ -154,7 +157,7 @@ def settings_view(request):
                 return redirect('account:settings')
             else:
                 messages.error(request, 'Ошибка при изменении телефона')
-
+    
     context = {
         'password_form': password_form,
         'email_form': email_form,
@@ -498,7 +501,7 @@ def checkout_view(request):
     
     cart = get_cart(request)
     
-    # Инициализация формы
+    # Инициализация формы (всегда создаем форму для получения choices)
     form = CheckoutAddressForm()
     
     # Автоматически заполняем данные из аккаунта пользователя
@@ -531,6 +534,27 @@ def checkout_view(request):
                 'entrance': last_address.entrance or '',
                 'floor': last_address.floor or '',
             })
+    else:
+        # Для анонимных пользователей заполняем начальные данные из POST или сессии
+        if request.method == 'POST':
+            initial_data = {
+                'first_name': request.POST.get('first_name', ''),
+                'last_name': request.POST.get('last_name', ''),
+                'email': request.POST.get('email', ''),
+                'phone': request.POST.get('phone', ''),
+                'city': request.POST.get('city', ''),
+                'street': request.POST.get('street', ''),
+                'house': request.POST.get('house', ''),
+                'apartment': request.POST.get('apartment', ''),
+                'entrance': request.POST.get('entrance', ''),
+                'floor': request.POST.get('floor', ''),
+            }
+    
+    # Отладка: выводим список городов
+    import logging
+    logger = logging.getLogger(__name__)
+    logger.info(f"City choices in form: {form.fields['city'].choices}")
+    logger.info(f"Initial data city: {initial_data.get('city', 'N/A')}")
     
     return render(request, 'account/checkout.html', {
         'cart': cart,
@@ -540,7 +564,6 @@ def checkout_view(request):
 
 
 def payment_success_view(request, order_id):
-    """Страница успешной оплаты"""
     order = get_object_or_404(Order, id=order_id)
     order.payment_status = 'paid'
     order.status = 'confirmed'

@@ -35,21 +35,22 @@
             <form class="profile-form" method="POST">
               {% csrf_token %}
               <div class="form-group">
-                <label>{{ password_form.current_password.label }}</label>
+                <label>Текущий пароль <span style="color: #f56565;">*</span></label>
                 {{ password_form.current_password }}
                 {% if password_form.current_password.errors %}
                   <span class="error">{{ password_form.current_password.errors }}</span>
                 {% endif %}
               </div>
               <div class="form-group">
-                <label>{{ password_form.new_password.label }}</label>
+                <label>Новый пароль <span style="color: #f56565;">*</span></label>
                 {{ password_form.new_password }}
                 {% if password_form.new_password.errors %}
                   <span class="error">{{ password_form.new_password.errors }}</span>
                 {% endif %}
+                <small style="color: #888; font-size: 0.8rem;">Минимум 8 символов, заглавная буква и цифра</small>
               </div>
               <div class="form-group">
-                <label>{{ password_form.confirm_password.label }}</label>
+                <label>Подтверждение нового пароля <span style="color: #f56565;">*</span></label>
                 {{ password_form.confirm_password }}
                 {% if password_form.confirm_password.errors %}
                   <span class="error">{{ password_form.confirm_password.errors }}</span>
@@ -72,18 +73,18 @@
             <form class="profile-form" method="POST">
               {% csrf_token %}
               <div class="form-group">
-                <label>Текущий email</label>
-                <input type="email" value="{{ user.email }}" readonly />
+                <label>Текущий email (идентификатор)</label>
+                <div class="static-text">{{ user.email }}</div>
               </div>
               <div class="form-group">
-                <label>{{ email_form.new_email.label }}</label>
+                <label>Новый email <span style="color: #f56565;">*</span></label>
                 {{ email_form.new_email }}
                 {% if email_form.new_email.errors %}
                   <span class="error">{{ email_form.new_email.errors }}</span>
                 {% endif %}
               </div>
               <div class="form-group">
-                <label>{{ email_form.password.label }}</label>
+                <label>Пароль для подтверждения <span style="color: #f56565;">*</span></label>
                 {{ email_form.password }}
                 {% if email_form.password.errors %}
                   <span class="error">{{ email_form.password.errors }}</span>
@@ -106,18 +107,18 @@
             <form class="profile-form" method="POST">
               {% csrf_token %}
               <div class="form-group">
-                <label>Текущий номер</label>
-                <input type="tel" value="{{ user.phone|default:'' }}" readonly />
+                <label>Текущий номер телефона</label>
+                <div class="static-text">{{ user.phone|default:'-' }}</div>
               </div>
               <div class="form-group">
-                <label>{{ phone_form.new_phone.label }}</label>
+                <label>Новый номер телефона <span style="color: #f56565;">*</span></label>
                 {{ phone_form.new_phone }}
                 {% if phone_form.new_phone.errors %}
                   <span class="error">{{ phone_form.new_phone.errors }}</span>
                 {% endif %}
               </div>
               <div class="form-group">
-                <label>{{ phone_form.password.label }}</label>
+                <label>Пароль для подтверждения <span style="color: #f56565;">*</span></label>
                 {{ phone_form.password }}
                 {% if phone_form.password.errors %}
                   <span class="error">{{ phone_form.password.errors }}</span>

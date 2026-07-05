@@ -29,7 +29,12 @@
         <nav class="nav-links">
             <a href="{% url 'home' %}">Главная</a>
             <a href="{% url 'shop:catalog' %}">Каталог</a>
-            <a href="{% url 'account:cart' %}">Корзина</a>
+            <a href="{% url 'account:cart' %}" class="cart-link">
+                Корзина
+                {% if cart_count > 0 %}
+                    <span class="cart-badge">{{ cart_count }}</span>
+                {% endif %}
+            </a>
             <a href="{% url 'guides:guides' %}">Информация</a>
             <a href="{% url 'shop:contacts' %}">Контакты</a>
         </nav>

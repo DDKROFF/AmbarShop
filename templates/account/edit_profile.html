@@ -46,33 +46,51 @@
               {% endif %}
               
               <div class="form-group">
-                <label>Имя пользователя</label>
-                {{ form.username }}
-                {% if form.username.errors %}
-                  <span class="error">{{ form.username.errors }}</span>
+                <label>Email <span style="color: #f56565;">*</span></label>
+                {{ form.email }}
+                {% if form.email.errors %}
+                  <span class="error">{{ form.email.errors }}</span>
                 {% endif %}
-                <small style="color: #888; font-size: 0.8rem;">{{ form.username.help_text }}</small>
+                <small style="color: #888; font-size: 0.8rem;">Используется для входа в аккаунт</small>
               </div>
               
               <div class="form-group">
-                <label>Имя <span style="color: #888; font-size: 0.8rem;">(необязательно)</span></label>
+                <label>Имя <span style="color: #f56565;">*</span></label>
                 {{ form.first_name }}
                 {% if form.first_name.errors %}
                   <span class="error">{{ form.first_name.errors }}</span>
                 {% endif %}
-                <small style="color: #888; font-size: 0.8rem;">{{ form.first_name.help_text }}</small>
               </div>
               
               <div class="form-group">
-                <label>Фамилия <span style="color: #888; font-size: 0.8rem;">(необязательно)</span></label>
+                <label>Фамилия <span style="color: #f56565;">*</span></label>
                 {{ form.last_name }}
                 {% if form.last_name.errors %}
                   <span class="error">{{ form.last_name.errors }}</span>
                 {% endif %}
-                <small style="color: #888; font-size: 0.8rem;">{{ form.last_name.help_text }}</small>
               </div>
-              <button type="submit" class="btn btn-primary">Сохранить изменения</button>
-              <a href="{% url 'account:profile' %}" class="btn">Отмена</a>
+              
+              <div class="form-group">
+                <label>Отчество</label>
+                {{ form.middle_name }}
+                {% if form.middle_name.errors %}
+                  <span class="error">{{ form.middle_name.errors }}</span>
+                {% endif %}
+                <small style="color: #888; font-size: 0.8rem;">{{ form.middle_name.help_text }}</small>
+              </div>
+              
+              <div class="form-group">
+                <label>Телефон <span style="color: #f56565;">*</span></label>
+                {{ form.phone }}
+                {% if form.phone.errors %}
+                  <span class="error">{{ form.phone.errors }}</span>
+                {% endif %}
+              </div>
+              
+              <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
+                <button type="submit" class="btn btn-primary">Сохранить изменения</button>
+                <a href="{% url 'account:profile' %}" class="btn">Отмена</a>
+              </div>
             </form>
           </div>
         </main>
