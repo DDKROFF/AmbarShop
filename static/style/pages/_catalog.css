@@ -46,6 +46,12 @@
   accent-color: var(--green-700);
 }
 
+.count {
+  color: var(--muted);
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
 /* Sort Filter */
 .sort-filter {
   display: flex;
@@ -154,6 +160,20 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
 }
 
+.badge {
+  position: absolute;
+  top: 0.75rem;
+  left: 0.75rem;
+  padding: 0.35rem 0.6rem;
+  border-radius: 0.35rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  z-index: 10;
+  white-space: nowrap;
+  background: var(--green-700);
+  color: white;
+}
+
 .product-info {
   padding: 1rem;
   flex: 1;
@@ -213,8 +233,59 @@
   align-items: start;
 }
 
-/* Mobile Responsive */
-@media (max-width: 768px) {
+/* Breadcrumbs */
+.breadcrumb {
+  padding: 20px 0;
+  background: #f9fafb;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.breadcrumb .container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+}
+
+.breadcrumb a {
+  color: #6b7280;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.breadcrumb a:hover {
+  color: #2563eb;
+}
+
+.breadcrumb span {
+  color: #9ca3af;
+}
+
+/* Empty Message */
+.empty-message {
+  text-align: center;
+  padding: 60px 20px;
+  background: #f8f9fa;
+  border-radius: 1rem;
+}
+
+.empty-message p {
+  font-size: 1.2rem;
+  color: var(--muted);
+  margin-bottom: 1rem;
+}
+
+/* Pagination */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  padding: 20px 0;
+}
+
+/* Responsive */
+@media (max-width: 992px) {
   .catalog-container {
     grid-template-columns: 1fr;
   }
@@ -223,7 +294,9 @@
     position: static;
     width: 100%;
   }
-  
+}
+
+@media (max-width: 768px) {
   .filter-section {
     padding: 1rem;
   }
@@ -237,16 +310,13 @@
     gap: 1rem;
   }
   
-  .product-card {
-    max-width: 100%;
-  }
-  
   .product-image {
     height: 180px;
   }
   
   .stock-warning,
-  .stock-out {
+  .stock-out,
+  .badge {
     font-size: 0.7rem;
     padding: 0.25rem 0.5rem;
   }
@@ -263,19 +333,6 @@
     font-size: 1rem;
   }
   
-  .product-card-btn {
-    font-size: 0.85rem;
-    padding: 0.65rem;
-  }
-  
-  .sort-form {
-    flex-direction: column;
-  }
-  
-  .sort-select {
-    width: 100%;
-  }
-  
   .catalog-header {
     flex-direction: column;
     align-items: flex-start;
@@ -283,7 +340,6 @@
   }
 }
 
-/* Small Mobile */
 @media (max-width: 480px) {
   .products-grid {
     grid-template-columns: 1fr;
@@ -291,9 +347,5 @@
   
   .product-image {
     height: 160px;
-  }
-  
-  .product-card-btn {
-    font-size: 0.8rem;
   }
 }

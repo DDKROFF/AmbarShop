@@ -23,7 +23,7 @@ class Command(BaseCommand):
         
         categories_data = [
             {'name': 'Корм для домашних животных', 'slug': 'korm-dlya-domashnih-zhivotnyh', 'description': 'Вкусный и полезный корм для ваших домашних питомцев'},
-            {'name': 'Корм для сельскохозяйственных животных', 'slug': 'korm-dlya-selkhoz-zhivotnyh', 'description': 'Комбикорм и гранулы для скота и поголовья'},
+            {'name': 'Корм для с/х животных', 'slug': 'korm-dlya-selkhoz-zhivotnyh', 'description': 'Комбикорм и гранулы для скота и поголовья'},
             {'name': 'Аксессуары для животных', 'slug': 'aksessuary-dlya-zhivotnyh', 'description': 'Все необходимое для содержания и ухода за животными'},
             {'name': 'Птица', 'slug': 'ptitsa', 'description': 'Суточные цыплята, утята и гусята от проверенного инкубатора'},
         ]
